@@ -1,8 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using LayerzeroMultitool.Commands;
 using LayerzeroMultitool.Models;
+using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Signer;
+using Nethereum.Util;
 
 namespace LayerzeroMultitool.ViewModels;
 
@@ -27,44 +34,58 @@ public class ViewModel : INotifyPropertyChanged
 
     public ViewModel()
     {
-        AccountInfos = new ObservableCollection<AccountInfo>()
-        {
-            new()
-            {
-                Address = "0x713b04EB5A9D585eC075CA65EdC3d6d7C12Be5Bb",
-                ArbitrumBalance = 0.13,
-                FantomBalance = 30,
-                BinanceSmartChainBalance = 0.4,
-                AvalancheBalance = 0.1,
-                PolygonBalance = 5,
-                PrivateKey = "0xprivate",
-                TotalBalanceUsd = 300.15,
-                UsdtBalance = 100.10
-            },
-            new()
-            {
-                Address = "0xbebra",
-                ArbitrumBalance = 0,
-                FantomBalance = 0,
-                BinanceSmartChainBalance = 0,
-                AvalancheBalance = 0,
-                PolygonBalance = 0,
-                PrivateKey = "0xprivate",
-                TotalBalanceUsd = 0,
-                UsdtBalance = 0
-            },
-            new()
-            {
-                Address = "0xbebra",
-                ArbitrumBalance = 0,
-                FantomBalance = 0,
-                BinanceSmartChainBalance = 0,
-                AvalancheBalance = 0,
-                PolygonBalance = 0,
-                PrivateKey = "0xprivate",
-                TotalBalanceUsd = 0,
-                UsdtBalance = 0
-            }
-        };
+        AccountInfos = new ObservableCollection<AccountInfo>();
     }
+
+    private string _generateInputAmount;
+
+    public string GenerateInputAmount
+    {
+        get => _generateInputAmount;
+        set
+        {
+            _generateInputAmount = value;
+            OnPropertyChanged(nameof(GenerateInputAmount));
+        }
+    }
+
+    public ICommand GenerateAccountsCommand
+    {
+        get => new RelayCommand(() =>
+        {
+            if (Int32.TryParse(GenerateInputAmount, out int inputAmount))
+            {
+                AccountInfos.Clear();
+                
+                for (int i = 0; i < inputAmount; i++)
+                {
+                    var (privateKey, address) = GenerateAccount();
+                    
+                    AccountInfos.Add(new()
+                    {
+                        PrivateKey = privateKey,
+                        Address = address
+                    });
+                }
+                
+                GenerateInputAmount = String.Empty;
+            }
+        }, () => GenerateInputAmount?.Length > 0);
+    }
+
+    public ICommand ClearAccountsCommand
+    {
+        get => new RelayCommand(() =>
+        {
+            AccountInfos.Clear();
+        }, () => AccountInfos.Count > 0);
+    }
+
+    public (string, string) GenerateAccount()
+    {
+        var privateKey = EthECKey.GenerateKey().GetPrivateKeyAsBytes().ToHex();
+        var address = EthECKey.GetPublicAddress(privateKey);
+        
+        return (privateKey, address);
+    } 
 }

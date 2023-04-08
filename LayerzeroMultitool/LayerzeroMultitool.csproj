@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="MaterialDesignThemes" Version="4.8.1-ci218" />
+      <PackageReference Include="Nethereum.Web3" Version="4.14.0" />
     </ItemGroup>
 
 </Project>
