@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerzeroMultitool", "LayerzeroMultitool\LayerzeroMultitool.csproj", "{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
