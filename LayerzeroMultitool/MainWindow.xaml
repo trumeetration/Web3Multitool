@@ -3,10 +3,206 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LayerzeroMultitool"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:LayerzeroMultitool.ViewModels"
+        d:DataContext="{d:DesignInstance viewModels:ViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        MinWidth="1000"
+        Height="450"
+        MaxWidth="1000">
     <Grid>
-
+        <materialDesign:Card>
+            <TabControl
+                materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
+                SnapsToDevicePixels="True"
+                Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                TabStripPlacement="Left">
+                <materialDesign:NavigationRailAssist.FloatingContent>
+                    <Button
+                        Margin="8"
+                        Content="{materialDesign:PackIcon Kind=Plus}"
+                        Style="{StaticResource MaterialDesignFloatingActionSecondaryButton}" />
+                </materialDesign:NavigationRailAssist.FloatingContent>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel
+                            Width="auto"
+                            Height="auto">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                Kind="Eye" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Text="View" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel
+                        Margin="16">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Accounts" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                            <Button
+                                Content="Generate"
+                                Margin="0,0,5,0" />
+                            <Button
+                                Content="Import"
+                                Margin="0,0,5,0" />
+                            <Button
+                                Content="Export"
+                                Margin="0,0,5,0" />
+                            <Button
+                                Content="Clear all"
+                                Style="{StaticResource MaterialDesignPaperLightButton}" />
+                        </StackPanel>
+                        <DataGrid
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="False"
+                            IsReadOnly="True"
+                            HeadersVisibility="All"
+                            CanUserResizeColumns="False"
+                            ItemsSource="{Binding AccountInfos}">
+                            <DataGrid.Columns>
+                                <!-- by default a DataGridCheckBoxColumn will have the MaterialDesignDataGridCheckBoxColumnStyle and MaterialDesignDataGridCheckBoxColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
+                                <!-- by default a DataGridTextColumn will have the MaterialDesignDataGridTextColumnStyle and MaterialDesignDataGridTextColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
+                                <DataGridTextColumn
+                                    Binding="{Binding Address}"
+                                    Header="Address" />
+                                <!-- if you want to use the pop up style (MaterialDesignDataGridTextColumnPopupEditingStyle), you must use MaterialDataGridTextColumn -->
+                                <DataGridTextColumn
+                                    Binding="{Binding BinanceSmartChainBalance}"
+                                    Header="BSC" />
+                                <!-- set a max length to get an indicator in the editor -->
+                                <DataGridTextColumn
+                                    Binding="{Binding AvalancheBalance}"
+                                    Header="AVAX" />
+                                <DataGridTextColumn
+                                    Binding="{Binding PolygonBalance}"
+                                    Header="Matic" />
+                                <DataGridTextColumn
+                                    Binding="{Binding ArbitrumBalance}"
+                                    Header="Arbitrum" />
+                                <DataGridTextColumn
+                                    Binding="{Binding FantomBalance}"
+                                    Header="Fantom" />
+                                <DataGridTextColumn
+                                    Binding="{Binding UsdtBalance}"
+                                    Header="USDT">
+                                </DataGridTextColumn>
+                                <DataGridTextColumn
+                                    Binding="{Binding TotalBalanceUsd}"
+                                    Header="Total USD">
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel
+                            Width="auto"
+                            Height="auto">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                Kind="ClockOutline" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Text="Recent" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel
+                        Margin="16">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Recent" />
+                        <TextBlock>
+                            <Run
+                                Text="tab 2 content. Default look and behaviors." />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run
+                                FontStyle="Italic">
+                                Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...
+                            </Run>
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel
+                            Width="auto"
+                            Height="auto">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                Kind="Images" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Text="Photos" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel
+                        Margin="16">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Photos" />
+                        <TextBlock>
+                            <Run
+                                Text="tab 3 content. Default look and behaviors." />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run
+                                FontStyle="Italic">
+                                Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...
+                            </Run>
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel
+                            Width="auto"
+                            Height="auto">
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                Kind="MusicBoxMultiple" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Text="Sounds" />
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel
+                        Margin="16">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Sounds" />
+                        <TextBlock>
+                            <Run
+                                Text="tab 4 content. Default look and behaviors." />
+                            <LineBreak />
+                            <LineBreak />
+                            <Run
+                                FontStyle="Italic">
+                                Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...
+                            </Run>
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </materialDesign:Card>
     </Grid>
 </Window>
