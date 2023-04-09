@@ -3,6 +3,7 @@
 public class AccountInfo
 {
     public string? Address { get; set; }
+    public string? CexAddress { get; set; } = "Not set";
     public string? PrivateKey { get; set; }
     public double BinanceSmartChainBalance { get; set; } = 0;
     public double AvalancheBalance { get; set; } = 0;

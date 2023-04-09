@@ -12,6 +12,9 @@
         MaxWidth="1000"
         MinHeight="700"
         MaxHeight="700">
+    <Window.Resources>
+        <viewModels:AddressConverter x:Key="AddressConverter"></viewModels:AddressConverter>
+    </Window.Resources>
     <Grid>
         <materialDesign:Card>
             <TabControl
@@ -57,9 +60,15 @@
                                 MaxLength="4"
                                 VerticalAlignment="Top"
                                 materialDesign:HintAssist.Hint="Amount"
-                                AcceptsReturn="True"
+                                AcceptsReturn="False"
                                 Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
+                                TextWrapping="Wrap">
+                                <TextBox.InputBindings>
+                                    <KeyBinding 
+                                        Command="{Binding GenerateAccountsCommand}"
+                                        Key="Enter"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
                             <Button
                                 Content="Generate"
                                 Command="{Binding GenerateAccountsCommand}"
@@ -91,8 +100,11 @@
                                 <!-- by default a DataGridCheckBoxColumn will have the MaterialDesignDataGridCheckBoxColumnStyle and MaterialDesignDataGridCheckBoxColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
                                 <!-- by default a DataGridTextColumn will have the MaterialDesignDataGridTextColumnStyle and MaterialDesignDataGridTextColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
                                 <DataGridTextColumn
-                                    Binding="{Binding Address}"
+                                    Binding="{Binding Address, Converter={StaticResource AddressConverter}}"
                                     Header="Address" />
+                                <DataGridTextColumn
+                                    Binding="{Binding CexAddress, Converter={StaticResource AddressConverter}}"
+                                    Header="CEX Address" />
                                 <!-- if you want to use the pop up style (MaterialDesignDataGridTextColumnPopupEditingStyle), you must use MaterialDataGridTextColumn -->
                                 <DataGridTextColumn
                                     Binding="{Binding BinanceSmartChainBalance}"
