@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 using LayerzeroMultitool.Commands;
 using LayerzeroMultitool.Models;
+using Microsoft.Win32;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using Nethereum.Util;
@@ -56,18 +61,18 @@ public class ViewModel : INotifyPropertyChanged
             if (Int32.TryParse(GenerateInputAmount, out int inputAmount))
             {
                 AccountInfos.Clear();
-                
+
                 for (int i = 0; i < inputAmount; i++)
                 {
                     var (privateKey, address) = GenerateAccount();
-                    
+
                     AccountInfos.Add(new()
                     {
                         PrivateKey = privateKey,
                         Address = address
                     });
                 }
-                
+
                 GenerateInputAmount = String.Empty;
             }
         }, () => GenerateInputAmount?.Length > 0);
@@ -75,17 +80,67 @@ public class ViewModel : INotifyPropertyChanged
 
     public ICommand ClearAccountsCommand
     {
+        get => new RelayCommand(() => { AccountInfos.Clear(); }, () => AccountInfos.Any());
+    }
+
+    public ICommand ImportAccountsFromFileCommand
+    {
         get => new RelayCommand(() =>
         {
-            AccountInfos.Clear();
-        }, () => AccountInfos.Count > 0);
+            OpenFileDialog dialog = new OpenFileDialog()
+            {
+                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                FilterIndex = 0
+            };
+            if (dialog.ShowDialog() != true)
+                return;
+            var content = File.ReadAllLines(dialog.FileName);
+
+            foreach (var line in content)
+            {
+                var privateKey = line.Contains(':')
+                    ? line.Split(':')[0]
+                    : line.Trim().Replace(Environment.NewLine, String.Empty);
+                
+                if (privateKey.Length == 0) continue;
+                var address = EthECKey.GetPublicAddress(privateKey);
+                AccountInfos.Add(new()
+                {
+                    Address = address,
+                    PrivateKey = privateKey
+                });
+            }
+        }, () => true);
+    }
+
+    public ICommand ExportAccountsToFileCommand
+    {
+        get => new RelayCommand(() =>
+        {
+            string content = String.Empty;
+
+            foreach (var accountInfo in AccountInfos)
+            {
+                content += $"{accountInfo.PrivateKey}:{accountInfo.Address}\n";
+            }
+
+            var destinationDirectory = Directory.GetCurrentDirectory() + "\\Export";
+
+            if (!Directory.Exists(destinationDirectory))
+                Directory.CreateDirectory(destinationDirectory);
+
+            var filePath = $"{destinationDirectory}\\export_{Guid.NewGuid().ToString()}.txt";
+            File.WriteAllText(filePath, content);
+
+            Process.Start("explorer.exe", destinationDirectory);
+        }, () => AccountInfos.Any());
     }
 
     public (string, string) GenerateAccount()
     {
         var privateKey = EthECKey.GenerateKey().GetPrivateKeyAsBytes().ToHex();
         var address = EthECKey.GetPublicAddress(privateKey);
-        
+
         return (privateKey, address);
-    } 
+    }
 }
