@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModels="clr-namespace:LayerzeroMultitool.ViewModels"
+        xmlns:models="clr-namespace:LayerzeroMultitool.Models"
+        xmlns:converters="clr-namespace:LayerzeroMultitool.Converters"
         d:DataContext="{d:DesignInstance viewModels:ViewModel}"
         mc:Ignorable="d"
         Title="MainWindow"
@@ -13,7 +15,8 @@
         MinHeight="700"
         MaxHeight="700">
     <Window.Resources>
-        <viewModels:AddressConverter x:Key="AddressConverter"></viewModels:AddressConverter>
+        <converters:AddressConverter x:Key="AddressConverter"></converters:AddressConverter>
+        <converters:DateConverter x:Key="DateConverter"></converters:DateConverter>
     </Window.Resources>
     <Grid>
         <materialDesign:Card>
@@ -64,9 +67,9 @@
                                 Style="{StaticResource MaterialDesignFilledTextBox}"
                                 TextWrapping="Wrap">
                                 <TextBox.InputBindings>
-                                    <KeyBinding 
+                                    <KeyBinding
                                         Command="{Binding GenerateAccountsCommand}"
-                                        Key="Enter"/>
+                                        Key="Enter" />
                                 </TextBox.InputBindings>
                             </TextBox>
                             <Button
@@ -87,6 +90,7 @@
                                 Style="{StaticResource MaterialDesignPaperLightButton}" />
                         </StackPanel>
                         <DataGrid
+                            RowDetailsVisibilityMode="VisibleWhenSelected"
                             MaxHeight="500"
                             ScrollViewer.VerticalScrollBarVisibility="Auto"
                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -97,40 +101,261 @@
                             CanUserResizeColumns="False"
                             ItemsSource="{Binding AccountInfos}">
                             <DataGrid.Columns>
-                                <!-- by default a DataGridCheckBoxColumn will have the MaterialDesignDataGridCheckBoxColumnStyle and MaterialDesignDataGridCheckBoxColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
-                                <!-- by default a DataGridTextColumn will have the MaterialDesignDataGridTextColumnStyle and MaterialDesignDataGridTextColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
                                 <DataGridTextColumn
                                     Binding="{Binding Address, Converter={StaticResource AddressConverter}}"
                                     Header="Address" />
                                 <DataGridTextColumn
                                     Binding="{Binding CexAddress, Converter={StaticResource AddressConverter}}"
                                     Header="CEX Address" />
-                                <!-- if you want to use the pop up style (MaterialDesignDataGridTextColumnPopupEditingStyle), you must use MaterialDataGridTextColumn -->
                                 <DataGridTextColumn
-                                    Binding="{Binding BinanceSmartChainBalance}"
+                                    Binding="{Binding BscInfo.BaseBalance}"
                                     Header="BSC" />
-                                <!-- set a max length to get an indicator in the editor -->
                                 <DataGridTextColumn
-                                    Binding="{Binding AvalancheBalance}"
+                                    Binding="{Binding AvaxInfo.BaseBalance}"
                                     Header="AVAX" />
                                 <DataGridTextColumn
-                                    Binding="{Binding PolygonBalance}"
+                                    Binding="{Binding PolygonInfo.BaseBalance}"
                                     Header="Matic" />
                                 <DataGridTextColumn
-                                    Binding="{Binding ArbitrumBalance}"
+                                    Binding="{Binding ArbitrumInfo.BaseBalance}"
                                     Header="Arbitrum" />
                                 <DataGridTextColumn
-                                    Binding="{Binding FantomBalance}"
+                                    Binding="{Binding FantomInfo.BaseBalance}"
                                     Header="Fantom" />
                                 <DataGridTextColumn
-                                    Binding="{Binding UsdtBalance}"
-                                    Header="USDT">
-                                </DataGridTextColumn>
+                                    Binding="{Binding TotalTxAmount}"
+                                    Header="Total tx"/>
                                 <DataGridTextColumn
                                     Binding="{Binding TotalBalanceUsd}"
-                                    Header="Total USD">
-                                </DataGridTextColumn>
+                                    Header="Total USD"/>
                             </DataGrid.Columns>
+
+                            <DataGrid.RowDetailsTemplate>
+                                <DataTemplate
+                                     DataType="{x:Type models:AccountInfo}">
+                                    <Border 
+                                        BorderThickness="0" 
+                                        Background="BlanchedAlmond" 
+                                        Padding="10 0"
+                                        HorizontalAlignment="Left"
+                                        Width="Auto">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30"></RowDefinition>
+                                                <RowDefinition Height="2"></RowDefinition>
+                                                <RowDefinition Height="30"></RowDefinition>
+                                                <RowDefinition Height="2"></RowDefinition>
+                                                <RowDefinition Height="30"></RowDefinition>
+                                                <RowDefinition Height="2"></RowDefinition>
+                                                <RowDefinition Height="30"></RowDefinition>
+                                                <RowDefinition Height="2"></RowDefinition>
+                                                <RowDefinition Height="30"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Grid.Row="0"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="BSC" />
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Grid.Row="0"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="AVAX" />
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                Grid.Row="0"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="Matic" />
+                                            <TextBlock
+                                                Grid.Column="4"
+                                                Grid.Row="0"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="Arbitrum" />
+                                            <TextBlock
+                                                Grid.Column="5"
+                                                Grid.Row="0"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="Fantom" />
+                                            <GridSplitter
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="6"
+                                                Height="2"
+                                                HorizontalAlignment="Stretch" />
+
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Grid.Row="2"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="Balance" />
+                                            <GridSplitter
+                                                Grid.Row="3"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="6"
+                                                Height="2"
+                                                HorizontalAlignment="Stretch" />
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Grid.Row="4"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="TxAmount" />
+                                            <GridSplitter
+                                                Grid.Row="5"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="6"
+                                                Height="2"
+                                                HorizontalAlignment="Stretch" />
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Grid.Row="6"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="FirstTxDate" />
+                                            <GridSplitter
+                                                Grid.Row="7"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="6"
+                                                Height="2"
+                                                HorizontalAlignment="Stretch" />
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Grid.Row="8"
+                                                FontWeight="Medium"
+                                                Foreground="#BC000000"
+                                                VerticalAlignment="Center"
+                                                Text="UsdtBalance" />
+
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Grid.Row="2"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding BscInfo.BaseBalance}"/>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Grid.Row="4"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding BscInfo.TxAmount}"/>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Grid.Row="6"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding BscInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Grid.Row="8"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding BscInfo.UsdtBalance}"/>
+                                            
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Grid.Row="2"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding AvaxInfo.BaseBalance}"/>
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Grid.Row="4"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding AvaxInfo.TxAmount}"/>
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Grid.Row="6"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding AvaxInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Grid.Row="8"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding AvaxInfo.UsdtBalance}"/>
+                                            
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                Grid.Row="2"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding PolygonInfo.BaseBalance}"/>
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                Grid.Row="4"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding PolygonInfo.TxAmount}"/>
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                Grid.Row="6"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding PolygonInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                Grid.Row="8"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding PolygonInfo.UsdtBalance}"/>
+                                            
+                                            <TextBlock
+                                                Grid.Column="4"
+                                                Grid.Row="2"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding ArbitrumInfo.BaseBalance}"/>
+                                            <TextBlock
+                                                Grid.Column="4"
+                                                Grid.Row="4"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding ArbitrumInfo.TxAmount}"/>
+                                            <TextBlock
+                                                Grid.Column="4"
+                                                Grid.Row="6"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding ArbitrumInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                            <TextBlock
+                                                Grid.Column="4"
+                                                Grid.Row="8"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding ArbitrumInfo.UsdtBalance}"/>
+                                            
+                                            <TextBlock
+                                                Grid.Column="5"
+                                                Grid.Row="2"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FantomInfo.BaseBalance}"/>
+                                            <TextBlock
+                                                Grid.Column="5"
+                                                Grid.Row="4"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FantomInfo.TxAmount}"/>
+                                            <TextBlock
+                                                Grid.Column="5"
+                                                Grid.Row="6"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FantomInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                            <TextBlock
+                                                Grid.Column="5"
+                                                Grid.Row="8"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FantomInfo.UsdtBalance}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGrid.RowDetailsTemplate>
                         </DataGrid>
                     </StackPanel>
                 </TabItem>

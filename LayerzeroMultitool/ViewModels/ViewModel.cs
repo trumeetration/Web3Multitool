@@ -70,7 +70,12 @@ public class ViewModel : INotifyPropertyChanged
                     AccountInfos.Add(new()
                     {
                         PrivateKey = privateKey,
-                        Address = address
+                        Address = address,
+                        BscInfo = new BscAddressInfo(),
+                        AvaxInfo = new AvalancheAddressInfo(),
+                        PolygonInfo = new PolygonAddressInfo(),
+                        ArbitrumInfo = new ArbitrumAddressInfo(),
+                        FantomInfo = new FantomAddressInfo()
                     });
                 }
 
@@ -143,18 +148,5 @@ public class ViewModel : INotifyPropertyChanged
         var address = EthECKey.GetPublicAddress(privateKey);
 
         return (privateKey, address);
-    }
-}
-
-public class AddressConverter : IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        return ((string)value) == "Not set" ? value : "0x..." + ((string)value)[^8..];
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
     }
 }
