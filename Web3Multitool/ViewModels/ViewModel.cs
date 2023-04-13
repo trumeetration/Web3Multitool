@@ -10,37 +10,27 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using LayerzeroMultitool.Commands;
-using LayerzeroMultitool.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using Nethereum.Util;
+using Web3Multitool.Commands;
+using Web3Multitool.Models;
 
-namespace LayerzeroMultitool.ViewModels;
+namespace Web3Multitool.ViewModels;
 
 public class ViewModel : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
-
+    private ApplicationContext db;
     public ObservableCollection<AccountInfo> AccountInfos { get; set; }
 
     public ViewModel()
     {
+        db = new ApplicationContext();
         AccountInfos = new ObservableCollection<AccountInfo>();
+        
+        LoadInfoFromDb();
     }
 
     private string _generateInputAmount;
@@ -57,28 +47,34 @@ public class ViewModel : INotifyPropertyChanged
 
     public ICommand GenerateAccountsCommand
     {
-        get => new RelayCommand(() =>
+        get => new RelayCommand(async () =>
         {
             if (Int32.TryParse(GenerateInputAmount, out int inputAmount))
             {
                 AccountInfos.Clear();
 
+                ClearAccountInfos();
+
                 for (int i = 0; i < inputAmount; i++)
                 {
                     var (privateKey, address) = GenerateAccount();
 
-                    AccountInfos.Add(new()
+                    var newEntity = new AccountInfo
                     {
                         PrivateKey = privateKey,
                         Address = address,
-                        BscInfo = new BscAddressInfo(),
-                        AvaxInfo = new AvalancheAddressInfo(),
-                        PolygonInfo = new PolygonAddressInfo(),
-                        ArbitrumInfo = new ArbitrumAddressInfo(),
-                        FantomInfo = new FantomAddressInfo()
-                    });
+                        FantomInfo = new AddressChainInfo { ChainId = 250 },
+                        AvaxInfo = new AddressChainInfo { ChainId = 43114 },
+                        PolygonInfo = new AddressChainInfo { ChainId = 137 },
+                        ArbitrumInfo = new AddressChainInfo { ChainId = 42161 },
+                        OptimismInfo = new AddressChainInfo { ChainId = 10 }
+                    };
+
+                    AccountInfos.Add(newEntity);
+                    db.AccountInfos.Add(newEntity);
                 }
 
+                db.SaveChanges();
                 GenerateInputAmount = String.Empty;
             }
         }, () => GenerateInputAmount?.Length > 0);
@@ -86,7 +82,11 @@ public class ViewModel : INotifyPropertyChanged
 
     public ICommand ClearAccountsCommand
     {
-        get => new RelayCommand(() => { AccountInfos.Clear(); }, () => AccountInfos.Any());
+        get => new RelayCommand(() =>
+        {
+            AccountInfos.Clear();
+            ClearAccountInfos();
+        }, () => AccountInfos.Any());
     }
 
     public ICommand ImportAccountsFromFileCommand
@@ -107,7 +107,7 @@ public class ViewModel : INotifyPropertyChanged
                 var privateKey = line.Contains(':')
                     ? line.Split(':')[0]
                     : line.Trim().Replace(Environment.NewLine, String.Empty);
-                
+
                 if (privateKey.Length == 0) continue;
                 var address = EthECKey.GetPublicAddress(privateKey);
                 AccountInfos.Add(new()
@@ -148,5 +148,51 @@ public class ViewModel : INotifyPropertyChanged
         var address = EthECKey.GetPublicAddress(privateKey);
 
         return (privateKey, address);
+    }
+
+    private void LoadInfoFromDb()
+    {
+        var accountInfosDb = db
+            .AccountInfos
+            .Include(x => x.ArbitrumInfo)
+            .Include(x => x.AvaxInfo)
+            .Include(x => x.FantomInfo)
+            .Include(x => x.OptimismInfo)
+            .Include(x => x.PolygonInfo)
+            .ToList();
+
+        foreach (var accountInfoDb in accountInfosDb)
+        {
+            AccountInfos.Add(accountInfoDb);
+        }
+    }
+    
+    private void ClearAccountInfos()
+    {
+        foreach (var info in db.AccountInfos)
+        {
+            db.AccountInfos.Remove(info);
+        }
+        foreach (var chainInfo in db.AddressChainInfos)
+        {
+            db.AddressChainInfos.Remove(chainInfo);
+        }
+
+        db.SaveChanges();
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
     }
 }

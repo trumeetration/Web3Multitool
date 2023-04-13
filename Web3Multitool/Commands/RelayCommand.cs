@@ -1,6 +1,6 @@
 using System;
 
-namespace LayerzeroMultitool.Commands;
+namespace Web3Multitool.Commands;
 
 public class RelayCommand<T> : BaseRelayCommand
 {

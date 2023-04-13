@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using LayerzeroMultitool.ViewModels;
+using Web3Multitool.ViewModels;
 
-namespace LayerzeroMultitool
+namespace Web3Multitool
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

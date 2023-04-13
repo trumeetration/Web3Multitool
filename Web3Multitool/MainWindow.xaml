@@ -1,12 +1,12 @@
-﻿<Window x:Class="LayerzeroMultitool.MainWindow"
+﻿<Window x:Class="Web3Multitool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:viewModels="clr-namespace:LayerzeroMultitool.ViewModels"
-        xmlns:models="clr-namespace:LayerzeroMultitool.Models"
-        xmlns:converters="clr-namespace:LayerzeroMultitool.Converters"
+        xmlns:viewModels="clr-namespace:Web3Multitool.ViewModels"
+        xmlns:models="clr-namespace:Web3Multitool.Models"
+        xmlns:converters="clr-namespace:Web3Multitool.Converters"
         d:DataContext="{d:DesignInstance viewModels:ViewModel}"
         mc:Ignorable="d"
         Title="MainWindow"
@@ -108,7 +108,7 @@
                                     Binding="{Binding CexAddress, Converter={StaticResource AddressConverter}}"
                                     Header="CEX Address" />
                                 <DataGridTextColumn
-                                    Binding="{Binding BscInfo.BaseBalance}"
+                                    Binding="{Binding FantomInfo.BaseBalance}"
                                     Header="BSC" />
                                 <DataGridTextColumn
                                     Binding="{Binding AvaxInfo.BaseBalance}"
@@ -120,7 +120,7 @@
                                     Binding="{Binding ArbitrumInfo.BaseBalance}"
                                     Header="Arbitrum" />
                                 <DataGridTextColumn
-                                    Binding="{Binding FantomInfo.BaseBalance}"
+                                    Binding="{Binding OptimismInfo.BaseBalance}"
                                     Header="Fantom" />
                                 <DataGridTextColumn
                                     Binding="{Binding TotalTxAmount}"
@@ -252,22 +252,22 @@
                                                 Grid.Column="1"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding BscInfo.BaseBalance}"/>
+                                                Text="{Binding FantomInfo.BaseBalance}"/>
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding BscInfo.TxAmount}"/>
+                                                Text="{Binding FantomInfo.TxAmount}"/>
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding BscInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding FantomInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding BscInfo.UsdtBalance}"/>
+                                                Text="{Binding FantomInfo.UsdcBalance}"/>
                                             
                                             <TextBlock
                                                 Grid.Column="2"
@@ -288,7 +288,7 @@
                                                 Grid.Column="2"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding AvaxInfo.UsdtBalance}"/>
+                                                Text="{Binding AvaxInfo.UsdcBalance}"/>
                                             
                                             <TextBlock
                                                 Grid.Column="3"
@@ -309,7 +309,7 @@
                                                 Grid.Column="3"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding PolygonInfo.UsdtBalance}"/>
+                                                Text="{Binding PolygonInfo.UsdcBalance}"/>
                                             
                                             <TextBlock
                                                 Grid.Column="4"
@@ -330,28 +330,28 @@
                                                 Grid.Column="4"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding ArbitrumInfo.UsdtBalance}"/>
+                                                Text="{Binding ArbitrumInfo.UsdcBalance}"/>
                                             
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.BaseBalance}"/>
+                                                Text="{Binding OptimismInfo.BaseBalance}"/>
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.TxAmount}"/>
+                                                Text="{Binding OptimismInfo.TxAmount}"/>
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding OptimismInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.UsdtBalance}"/>
+                                                Text="{Binding OptimismInfo.UsdcBalance}"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

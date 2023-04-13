@@ -9,6 +9,11 @@
 
     <ItemGroup>
       <PackageReference Include="MaterialDesignThemes" Version="4.8.1-ci218" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0-preview.3.23174.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0-preview.3.23174.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Nethereum.Web3" Version="4.14.0" />
     </ItemGroup>
 

@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace LayerzeroMultitool.Commands;
+namespace Web3Multitool.Commands;
 
 public abstract class BaseRelayCommand : ICommand
 {

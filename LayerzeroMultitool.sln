@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerzeroMultitool", "LayerzeroMultitool\LayerzeroMultitool.csproj", "{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web3Multitool", "Web3Multitool\Web3Multitool.csproj", "{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
