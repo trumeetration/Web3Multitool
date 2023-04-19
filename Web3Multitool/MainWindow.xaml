@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance viewModels:ViewModel}"
         mc:Ignorable="d"
         Title="MainWindow"
-        MinWidth="1000"
-        MaxWidth="1000"
+        MinWidth="1100"
+        MaxWidth="1100"
         MinHeight="700"
         MaxHeight="700">
     <Window.Resources>
@@ -21,7 +21,6 @@
     <Grid>
         <materialDesign:Card>
             <TabControl
-                SelectedIndex="1"
                 materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
                 SnapsToDevicePixels="True"
                 Style="{StaticResource MaterialDesignNavigationRailTabControl}"
@@ -100,6 +99,8 @@
                             IsReadOnly="True"
                             HeadersVisibility="All"
                             CanUserResizeColumns="False"
+                            CanUserSortColumns="False"
+                            CanUserDeleteRows="False"
                             ItemsSource="{Binding AccountInfos}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn
@@ -110,7 +111,7 @@
                                     Header="CEX Address" />
                                 <DataGridTextColumn
                                     Binding="{Binding FantomInfo.BaseBalance}"
-                                    Header="BSC" />
+                                    Header="FTM" />
                                 <DataGridTextColumn
                                     Binding="{Binding AvaxInfo.BaseBalance}"
                                     Header="AVAX" />
@@ -122,13 +123,43 @@
                                     Header="Arbitrum" />
                                 <DataGridTextColumn
                                     Binding="{Binding OptimismInfo.BaseBalance}"
-                                    Header="Fantom" />
+                                    Header="Optimism" />
                                 <DataGridTextColumn
                                     Binding="{Binding TotalTxAmount}"
                                     Header="Total tx" />
                                 <DataGridTextColumn
                                     Binding="{Binding TotalBalanceUsd}"
                                     Header="Total USD" />
+                                <DataGridTemplateColumn
+                                    Header="Actions">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel
+                                                Orientation="Horizontal">
+                                                <Button
+                                                    Content="{materialDesign:PackIcon Edit}"
+                                                    Height="25"
+                                                    Width="40"
+                                                    ToolTip="Edit CEX Address"
+                                                    Padding="0"/>
+                                                <Button
+                                                    Content="{materialDesign:PackIcon CashPlus}"
+                                                    Height="25"
+                                                    Width="40"
+                                                    ToolTip="Deposit from CEX"
+                                                    Margin="5,0,0,0"
+                                                    Padding="0"/>
+                                                <Button
+                                                    Content="{materialDesign:PackIcon CashMinus}"
+                                                    Height="25"
+                                                    Width="40"
+                                                    ToolTip="Withdraw to CEX"
+                                                    Margin="5,0,0,0"
+                                                    Padding="0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
 
                             <DataGrid.RowDetailsTemplate>
