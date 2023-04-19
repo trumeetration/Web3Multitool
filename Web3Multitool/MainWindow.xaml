@@ -21,6 +21,7 @@
     <Grid>
         <materialDesign:Card>
             <TabControl
+                SelectedIndex="1"
                 materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
                 SnapsToDevicePixels="True"
                 Style="{StaticResource MaterialDesignNavigationRailTabControl}"
@@ -124,18 +125,18 @@
                                     Header="Fantom" />
                                 <DataGridTextColumn
                                     Binding="{Binding TotalTxAmount}"
-                                    Header="Total tx"/>
+                                    Header="Total tx" />
                                 <DataGridTextColumn
                                     Binding="{Binding TotalBalanceUsd}"
-                                    Header="Total USD"/>
+                                    Header="Total USD" />
                             </DataGrid.Columns>
 
                             <DataGrid.RowDetailsTemplate>
                                 <DataTemplate
-                                     DataType="{x:Type models:AccountInfo}">
-                                    <Border 
-                                        BorderThickness="0" 
-                                        Background="BlanchedAlmond" 
+                                    DataType="{x:Type models:AccountInfo}">
+                                    <Border
+                                        BorderThickness="0"
+                                        Background="BlanchedAlmond"
                                         Padding="10 0"
                                         HorizontalAlignment="Left"
                                         Width="Auto">
@@ -252,106 +253,106 @@
                                                 Grid.Column="1"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.BaseBalance}"/>
+                                                Text="{Binding FantomInfo.BaseBalance}" />
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.TxAmount}"/>
+                                                Text="{Binding FantomInfo.TxAmount}" />
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding FantomInfo.FirstTxDate, Converter={StaticResource DateConverter}}" />
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FantomInfo.UsdcBalance}"/>
-                                            
+                                                Text="{Binding FantomInfo.UsdcBalance}" />
+
                                             <TextBlock
                                                 Grid.Column="2"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding AvaxInfo.BaseBalance}"/>
+                                                Text="{Binding AvaxInfo.BaseBalance}" />
                                             <TextBlock
                                                 Grid.Column="2"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding AvaxInfo.TxAmount}"/>
+                                                Text="{Binding AvaxInfo.TxAmount}" />
                                             <TextBlock
                                                 Grid.Column="2"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding AvaxInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding AvaxInfo.FirstTxDate, Converter={StaticResource DateConverter}}" />
                                             <TextBlock
                                                 Grid.Column="2"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding AvaxInfo.UsdcBalance}"/>
-                                            
+                                                Text="{Binding AvaxInfo.UsdcBalance}" />
+
                                             <TextBlock
                                                 Grid.Column="3"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding PolygonInfo.BaseBalance}"/>
+                                                Text="{Binding PolygonInfo.BaseBalance}" />
                                             <TextBlock
                                                 Grid.Column="3"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding PolygonInfo.TxAmount}"/>
+                                                Text="{Binding PolygonInfo.TxAmount}" />
                                             <TextBlock
                                                 Grid.Column="3"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding PolygonInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding PolygonInfo.FirstTxDate, Converter={StaticResource DateConverter}}" />
                                             <TextBlock
                                                 Grid.Column="3"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding PolygonInfo.UsdcBalance}"/>
-                                            
+                                                Text="{Binding PolygonInfo.UsdcBalance}" />
+
                                             <TextBlock
                                                 Grid.Column="4"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding ArbitrumInfo.BaseBalance}"/>
+                                                Text="{Binding ArbitrumInfo.BaseBalance}" />
                                             <TextBlock
                                                 Grid.Column="4"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding ArbitrumInfo.TxAmount}"/>
+                                                Text="{Binding ArbitrumInfo.TxAmount}" />
                                             <TextBlock
                                                 Grid.Column="4"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding ArbitrumInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding ArbitrumInfo.FirstTxDate, Converter={StaticResource DateConverter}}" />
                                             <TextBlock
                                                 Grid.Column="4"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding ArbitrumInfo.UsdcBalance}"/>
-                                            
+                                                Text="{Binding ArbitrumInfo.UsdcBalance}" />
+
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding OptimismInfo.BaseBalance}"/>
+                                                Text="{Binding OptimismInfo.BaseBalance}" />
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="4"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding OptimismInfo.TxAmount}"/>
+                                                Text="{Binding OptimismInfo.TxAmount}" />
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="6"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding OptimismInfo.FirstTxDate, Converter={StaticResource DateConverter}}"/>
+                                                Text="{Binding OptimismInfo.FirstTxDate, Converter={StaticResource DateConverter}}" />
                                             <TextBlock
                                                 Grid.Column="5"
                                                 Grid.Row="8"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding OptimismInfo.UsdcBalance}"/>
+                                                Text="{Binding OptimismInfo.UsdcBalance}" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -368,10 +369,10 @@
                                 Width="24"
                                 Height="24"
                                 HorizontalAlignment="Center"
-                                Kind="ClockOutline" />
+                                Kind="Settings" />
                             <TextBlock
                                 HorizontalAlignment="Center"
-                                Text="Recent" />
+                                Text="Settings" />
                         </StackPanel>
                     </TabItem.Header>
                     <StackPanel
@@ -379,83 +380,96 @@
                         <TextBlock
                             Margin="0,0,0,8"
                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                            Text="Recent" />
-                        <TextBlock>
-                            <Run
-                                Text="tab 2 content. Default look and behaviors." />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run
-                                FontStyle="Italic">
-                                Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...
-                            </Run>
-                        </TextBlock>
-                    </StackPanel>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel
-                            Width="auto"
-                            Height="auto">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
-                                Kind="Images" />
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                Text="Photos" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel
-                        Margin="16">
-                        <TextBlock
-                            Margin="0,0,0,8"
-                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                            Text="Photos" />
-                        <TextBlock>
-                            <Run
-                                Text="tab 3 content. Default look and behaviors." />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run
-                                FontStyle="Italic">
-                                Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...
-                            </Run>
-                        </TextBlock>
-                    </StackPanel>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel
-                            Width="auto"
-                            Height="auto">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
-                                Kind="MusicBoxMultiple" />
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                Text="Sounds" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel
-                        Margin="16">
-                        <TextBlock
-                            Margin="0,0,0,8"
-                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                            Text="Sounds" />
-                        <TextBlock>
-                            <Run
-                                Text="tab 4 content. Default look and behaviors." />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run
-                                FontStyle="Italic">
-                                Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...
-                            </Run>
-                        </TextBlock>
+                            Text="Settings" />
+                        <TextBox
+                            Text="{Binding BinanceAPI, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="Binance API key"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <TextBox
+                            Text="{Binding BybitAPI, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="Bybit API key"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <TextBox
+                            Text="{Binding OKXAPI, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="OKX API key"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <Separator
+                            Margin="0,0,0,10"></Separator>
+                        <TextBox
+                            Text="{Binding ArbitrumRPC, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="Arbitrum RPC Url"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <TextBox
+                            Text="{Binding FantomRPC, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="Fantom RPC Url"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <TextBox
+                            Text="{Binding AVAXRPC, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="AVAX RPC Url"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <TextBox
+                            Text="{Binding PolygonRPC, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="Polygon RPC Url"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        <TextBox
+                            Text="{Binding OptimismRPC, Mode=TwoWay}"
+                            Width="300"
+                            Margin="0,0,0,10"
+                            VerticalAlignment="Top"
+                            materialDesign:HintAssist.Hint="Optimism RPC Url"
+                            AcceptsReturn="True"
+                            HorizontalAlignment="Left"
+                            Style="{StaticResource MaterialDesignFilledTextBox}"
+                            TextWrapping="Wrap" />
+                        
+                        <Button
+                            Command="{Binding SaveConfigData}"
+                            HorizontalAlignment="Right"
+                            Width="100"
+                            Content="Save"
+                            Margin="0,100,0,0" />
                     </StackPanel>
                 </TabItem>
             </TabControl>

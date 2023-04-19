@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -29,8 +30,9 @@ public class ViewModel : INotifyPropertyChanged
     {
         db = new ApplicationContext();
         AccountInfos = new ObservableCollection<AccountInfo>();
-        
+
         LoadInfoFromDb();
+        LoadConfigInfo();
     }
 
     private string _generateInputAmount;
@@ -42,6 +44,102 @@ public class ViewModel : INotifyPropertyChanged
         {
             _generateInputAmount = value;
             OnPropertyChanged(nameof(GenerateInputAmount));
+        }
+    }
+
+    private string _binanceAPI;
+
+    public string BinanceAPI
+    {
+        get => _binanceAPI;
+        set
+        {
+            _binanceAPI = value;
+            OnPropertyChanged(nameof(BinanceAPI));
+        }
+    }
+    
+    private string _bybitAPI;
+
+    public string BybitAPI
+    {
+        get => _bybitAPI;
+        set
+        {
+            _bybitAPI = value;
+            OnPropertyChanged(nameof(BybitAPI));
+        }
+    }
+    
+    private string _okxAPI;
+
+    public string OKXAPI
+    {
+        get => _okxAPI;
+        set
+        {
+            _okxAPI = value;
+            OnPropertyChanged(nameof(OKXAPI));
+        }
+    }
+    
+    private string _arbitrumRPC;
+
+    public string ArbitrumRPC
+    {
+        get => _arbitrumRPC;
+        set
+        {
+            _arbitrumRPC = value;
+            OnPropertyChanged(nameof(ArbitrumRPC));
+        }
+    }
+    
+    private string _fantomRPC;
+
+    public string FantomRPC
+    {
+        get => _fantomRPC;
+        set
+        {
+            _fantomRPC = value;
+            OnPropertyChanged(nameof(FantomRPC));
+        }
+    }
+    
+    private string _avaxRPC;
+
+    public string AVAXRPC
+    {
+        get => _avaxRPC;
+        set
+        {
+            _avaxRPC = value;
+            OnPropertyChanged(nameof(AVAXRPC));
+        }
+    }
+    
+    private string _polygonRPC;
+
+    public string PolygonRPC
+    {
+        get => _polygonRPC;
+        set
+        {
+            _polygonRPC = value;
+            OnPropertyChanged(nameof(PolygonRPC));
+        }
+    }
+    
+    private string _optimismRPC;
+
+    public string OptimismRPC
+    {
+        get => _optimismRPC;
+        set
+        {
+            _optimismRPC = value;
+            OnPropertyChanged(nameof(OptimismRPC));
         }
     }
 
@@ -142,7 +240,29 @@ public class ViewModel : INotifyPropertyChanged
         }, () => AccountInfos.Any());
     }
 
-    public (string, string) GenerateAccount()
+    public ICommand SaveConfigData
+    {
+        get => new RelayCommand(() =>
+        {
+            var config = new AppConfig
+            {
+                BinanceAPIKey = BinanceAPI,
+                BybitAPIKey = BybitAPI,
+                OKXAPIKey = OKXAPI,
+                ArbitrumRPC = ArbitrumRPC,
+                FantomRPC = FantomRPC,
+                AVAXRPC = AVAXRPC,
+                PolygonRPC = PolygonRPC,
+                OptimismRPC = OptimismRPC
+            };
+            
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string configString = JsonSerializer.Serialize(config, options);
+            File.WriteAllText("config.json", configString);
+        }, () => true);
+    }
+
+    private (string, string) GenerateAccount()
     {
         var privateKey = EthECKey.GenerateKey().GetPrivateKeyAsBytes().ToHex();
         var address = EthECKey.GetPublicAddress(privateKey);
@@ -167,12 +287,28 @@ public class ViewModel : INotifyPropertyChanged
         }
     }
     
+    private void LoadConfigInfo()
+    {
+        if (!File.Exists("config.json")) return;
+        var configInfoString = File.ReadAllText("config.json");
+        var configInfo = JsonSerializer.Deserialize<AppConfig>(configInfoString);
+        BinanceAPI = configInfo.BinanceAPIKey;
+        BybitAPI = configInfo.BybitAPIKey;
+        OKXAPI = configInfo.OKXAPIKey;
+        ArbitrumRPC = configInfo.ArbitrumRPC;
+        FantomRPC = configInfo.FantomRPC;
+        AVAXRPC = configInfo.AVAXRPC;
+        PolygonRPC = configInfo.PolygonRPC;
+        OptimismRPC = configInfo.OptimismRPC;
+    }
+
     private void ClearAccountInfos()
     {
         foreach (var info in db.AccountInfos)
         {
             db.AccountInfos.Remove(info);
         }
+
         foreach (var chainInfo in db.AddressChainInfos)
         {
             db.AddressChainInfos.Remove(chainInfo);
