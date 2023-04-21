@@ -103,6 +103,25 @@
                             CanUserDeleteRows="False"
                             ItemsSource="{Binding AccountInfos}">
                             <DataGrid.Columns>
+                                <DataGridCheckBoxColumn
+                                    IsReadOnly="False"
+                                    Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                    <DataGridCheckBoxColumn.Header>
+                                        <Border
+                                            Background="Transparent">
+                                            <CheckBox />
+                                        </Border>
+                                    </DataGridCheckBoxColumn.Header>
+                                    <DataGridCheckBoxColumn.HeaderStyle>
+                                        <Style
+                                            TargetType="{x:Type DataGridColumnHeader}"
+                                            BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                            <Setter
+                                                Property="HorizontalContentAlignment"
+                                                Value="Center" />
+                                        </Style>
+                                    </DataGridCheckBoxColumn.HeaderStyle>
+                                </DataGridCheckBoxColumn>
                                 <DataGridTextColumn
                                     Binding="{Binding Address, Converter={StaticResource AddressConverter}}"
                                     Header="Address" />

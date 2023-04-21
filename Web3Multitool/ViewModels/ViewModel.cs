@@ -17,22 +17,25 @@ using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using Nethereum.Util;
 using Web3Multitool.Commands;
+using Web3Multitool.Dto;
 using Web3Multitool.Models;
+using Web3Multitool.Utils;
 
 namespace Web3Multitool.ViewModels;
 
 public class ViewModel : INotifyPropertyChanged
 {
     private ApplicationContext db;
-    public ObservableCollection<AccountInfo> AccountInfos { get; set; }
+    public ObservableCollection<AccountInfoDto> AccountInfos { get; set; }
+    private Web3Utils _web3Utils;
 
     public ViewModel()
     {
         db = new ApplicationContext();
-        AccountInfos = new ObservableCollection<AccountInfo>();
-
+        AccountInfos = new ObservableCollection<AccountInfoDto>();
         LoadInfoFromDb();
         LoadConfigInfo();
+        ConnectToRpcList();
     }
 
     private string _generateInputAmount;
@@ -42,7 +45,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _generateInputAmount;
         set
         {
-            _generateInputAmount = value;
+            _generateInputAmount = value.Trim();
             OnPropertyChanged(nameof(GenerateInputAmount));
         }
     }
@@ -54,7 +57,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _binanceAPI;
         set
         {
-            _binanceAPI = value;
+            _binanceAPI = value?.Trim();
             OnPropertyChanged(nameof(BinanceAPI));
         }
     }
@@ -66,7 +69,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _bybitAPI;
         set
         {
-            _bybitAPI = value;
+            _bybitAPI = value?.Trim();
             OnPropertyChanged(nameof(BybitAPI));
         }
     }
@@ -78,7 +81,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _okxAPI;
         set
         {
-            _okxAPI = value;
+            _okxAPI = value?.Trim();
             OnPropertyChanged(nameof(OKXAPI));
         }
     }
@@ -90,7 +93,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _arbitrumRPC;
         set
         {
-            _arbitrumRPC = value;
+            _arbitrumRPC = value?.Trim();
             OnPropertyChanged(nameof(ArbitrumRPC));
         }
     }
@@ -102,7 +105,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _fantomRPC;
         set
         {
-            _fantomRPC = value;
+            _fantomRPC = value?.Trim();
             OnPropertyChanged(nameof(FantomRPC));
         }
     }
@@ -114,7 +117,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _avaxRPC;
         set
         {
-            _avaxRPC = value;
+            _avaxRPC = value.Trim();
             OnPropertyChanged(nameof(AVAXRPC));
         }
     }
@@ -126,7 +129,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _polygonRPC;
         set
         {
-            _polygonRPC = value;
+            _polygonRPC = value?.Trim();
             OnPropertyChanged(nameof(PolygonRPC));
         }
     }
@@ -138,7 +141,7 @@ public class ViewModel : INotifyPropertyChanged
         get => _optimismRPC;
         set
         {
-            _optimismRPC = value;
+            _optimismRPC = value?.Trim();
             OnPropertyChanged(nameof(OptimismRPC));
         }
     }
@@ -168,7 +171,19 @@ public class ViewModel : INotifyPropertyChanged
                         OptimismInfo = new AddressChainInfo { ChainId = 10 }
                     };
 
-                    AccountInfos.Add(newEntity);
+                    var newEntityDto = new AccountInfoDto
+                    {
+                        PrivateKey = privateKey,
+                        Address = address,
+                        FantomInfo = new AddressChainInfo { ChainId = 250 },
+                        AvaxInfo = new AddressChainInfo { ChainId = 43114 },
+                        PolygonInfo = new AddressChainInfo { ChainId = 137 },
+                        ArbitrumInfo = new AddressChainInfo { ChainId = 42161 },
+                        OptimismInfo = new AddressChainInfo { ChainId = 10 },
+                        IsSelected = false
+                    };
+
+                    AccountInfos.Add(newEntityDto);
                     db.AccountInfos.Add(newEntity);
                 }
 
@@ -259,6 +274,9 @@ public class ViewModel : INotifyPropertyChanged
             var options = new JsonSerializerOptions { WriteIndented = true };
             string configString = JsonSerializer.Serialize(config, options);
             File.WriteAllText("config.json", configString);
+            
+            Debug.WriteLine("Connecting to RPCs again");
+            ConnectToRpcList();
         }, () => true);
     }
 
@@ -283,7 +301,20 @@ public class ViewModel : INotifyPropertyChanged
 
         foreach (var accountInfoDb in accountInfosDb)
         {
-            AccountInfos.Add(accountInfoDb);
+            AccountInfos.Add(new AccountInfoDto
+            {
+                Address = accountInfoDb.Address,
+                ArbitrumInfo = accountInfoDb.ArbitrumInfo,
+                AvaxInfo = accountInfoDb.AvaxInfo,
+                CexAddress = accountInfoDb.CexAddress,
+                FantomInfo = accountInfoDb.FantomInfo,
+                OptimismInfo = accountInfoDb.OptimismInfo,
+                IsSelected = false,
+                PolygonInfo = accountInfoDb.PolygonInfo,
+                PrivateKey = accountInfoDb.PrivateKey,
+                TotalBalanceUsd = accountInfoDb.TotalBalanceUsd,
+                TotalTxAmount = accountInfoDb.TotalTxAmount
+            });
         }
     }
     
@@ -315,6 +346,24 @@ public class ViewModel : INotifyPropertyChanged
         }
 
         db.SaveChanges();
+    }
+
+    private void ConnectToRpcList()
+    {
+        var dict = new Dictionary<int, string>();
+        if (Uri.IsWellFormedUriString(ArbitrumRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(42161, ArbitrumRPC);
+        if (Uri.IsWellFormedUriString(FantomRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(250, FantomRPC);
+        if (Uri.IsWellFormedUriString(PolygonRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(137, PolygonRPC);
+        if (Uri.IsWellFormedUriString(OptimismRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(10, OptimismRPC);
+        if (Uri.IsWellFormedUriString(AVAXRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(43114, AVAXRPC);
+
+        if (dict.Any())
+            _web3Utils = new Web3Utils(dict);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
