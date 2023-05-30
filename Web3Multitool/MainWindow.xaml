@@ -10,6 +10,7 @@
         d:DataContext="{d:DesignInstance viewModels:ViewModel}"
         mc:Ignorable="d"
         Title="MainWindow"
+        Name="MainWin"
         MinWidth="1100"
         MaxWidth="1100"
         MinHeight="700"
@@ -18,7 +19,8 @@
         <converters:AddressConverter x:Key="AddressConverter"></converters:AddressConverter>
         <converters:DateConverter x:Key="DateConverter"></converters:DateConverter>
     </Window.Resources>
-    <Grid>
+    <materialDesign:DialogHost Identifier="RootDialog">
+        <Grid>
         <materialDesign:Card>
             <TabControl
                 materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
@@ -160,12 +162,15 @@
                                                     Height="25"
                                                     Width="40"
                                                     ToolTip="Edit CEX Address"
+                                                    Command="{Binding ElementName=MainWin, Path=DataContext.RunEditCexAddressDialogCommand}"
+                                                    CommandParameter="{Binding .}"
                                                     Padding="0"/>
                                                 <Button
                                                     Content="{materialDesign:PackIcon CashPlus}"
                                                     Height="25"
                                                     Width="40"
                                                     ToolTip="Deposit from CEX"
+                                                    Command="{Binding ElementName=MainWin, Path=DataContext.RunDepositToAddressDialog}"
                                                     Margin="5,0,0,0"
                                                     Padding="0"/>
                                                 <Button
@@ -525,4 +530,5 @@
             </TabControl>
         </materialDesign:Card>
     </Grid>
+    </materialDesign:DialogHost>
 </Window>

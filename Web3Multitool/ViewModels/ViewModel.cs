@@ -8,24 +8,28 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using Nethereum.Util;
 using Web3Multitool.Commands;
+using Web3Multitool.Dialogs;
 using Web3Multitool.Dto;
 using Web3Multitool.Models;
 using Web3Multitool.Utils;
 
 namespace Web3Multitool.ViewModels;
 
-public class ViewModel : INotifyPropertyChanged
+public class ViewModel : BaseViewModel
 {
     private ApplicationContext db;
+    private BackgroundWorker _backgroundWorker;
     public ObservableCollection<AccountInfoDto> AccountInfos { get; set; }
     private Web3Utils _web3Utils;
 
@@ -61,7 +65,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(BinanceAPI));
         }
     }
-    
+
     private string _bybitAPI;
 
     public string BybitAPI
@@ -73,7 +77,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(BybitAPI));
         }
     }
-    
+
     private string _okxAPI;
 
     public string OKXAPI
@@ -85,7 +89,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(OKXAPI));
         }
     }
-    
+
     private string _arbitrumRPC;
 
     public string ArbitrumRPC
@@ -97,7 +101,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(ArbitrumRPC));
         }
     }
-    
+
     private string _fantomRPC;
 
     public string FantomRPC
@@ -109,7 +113,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(FantomRPC));
         }
     }
-    
+
     private string _avaxRPC;
 
     public string AVAXRPC
@@ -121,7 +125,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(AVAXRPC));
         }
     }
-    
+
     private string _polygonRPC;
 
     public string PolygonRPC
@@ -133,7 +137,7 @@ public class ViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(PolygonRPC));
         }
     }
-    
+
     private string _optimismRPC;
 
     public string OptimismRPC
@@ -270,14 +274,55 @@ public class ViewModel : INotifyPropertyChanged
                 PolygonRPC = PolygonRPC,
                 OptimismRPC = OptimismRPC
             };
-            
+
             var options = new JsonSerializerOptions { WriteIndented = true };
             string configString = JsonSerializer.Serialize(config, options);
             File.WriteAllText("config.json", configString);
-            
+
             Debug.WriteLine("Connecting to RPCs again");
             ConnectToRpcList();
         }, () => true);
+    }
+
+    public ICommand RunEditCexAddressDialogCommand => new AnotherCommandImplementation(ExecuteRunEditCexAddressDialog);
+    private async void ExecuteRunEditCexAddressDialog(object? _)
+    {
+        //let's set up a little MVVM, cos that's what the cool kids are doing:
+        var view = new EditCexDialog()
+        {
+            DataContext = new EditCexDialogViewModel()
+        };
+
+        //show the dialog
+        var result = await DialogHost.Show(view, "RootDialog");
+
+        if (result is true)
+        {
+            var dialogViewModel = view.DataContext as EditCexDialogViewModel;
+            var inputCexAddress = dialogViewModel?.Address;
+            Debug.WriteLine($"Entered address: {inputCexAddress}");
+            var accountInfoDto = AccountInfos.SingleOrDefault((x) => x.Address == (_ as AccountInfoDto)?.Address);
+            accountInfoDto.CexAddress = inputCexAddress;
+        }
+
+        //check the result...
+        Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+    }
+    
+    public ICommand RunDepositToAddressDialog => new AnotherCommandImplementation(ExecuteRunDepositToAddressDialog);
+    private async void ExecuteRunDepositToAddressDialog(object? _)
+    {
+        //let's set up a little MVVM, cos that's what the cool kids are doing:
+        var view = new DepositToAddressDialog()
+        {
+            DataContext = new DepositToAddressDialogViewModel()
+        };
+
+        //show the dialog
+        var result = await DialogHost.Show(view, "RootDialog");
+
+        //check the result...
+        Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
     }
 
     private (string, string) GenerateAccount()
@@ -317,7 +362,7 @@ public class ViewModel : INotifyPropertyChanged
             });
         }
     }
-    
+
     private void LoadConfigInfo()
     {
         if (!File.Exists("config.json")) return;
@@ -364,20 +409,5 @@ public class ViewModel : INotifyPropertyChanged
 
         if (dict.Any())
             _web3Utils = new Web3Utils(dict);
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
     }
 }
