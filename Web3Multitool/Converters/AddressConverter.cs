@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -8,7 +9,15 @@ public class AddressConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
-        return value == null ? "Not set" : "0x..." + ((string)value)[^8..];
+        try
+        {
+            return value == null ? "Not set" : "0x..." + ((string)value)[^8..];
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return "Invalid";
+        }
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
