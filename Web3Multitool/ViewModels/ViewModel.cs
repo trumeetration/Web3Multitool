@@ -285,15 +285,14 @@ public class ViewModel : BaseViewModel
     }
 
     public ICommand RunEditCexAddressDialogCommand => new AnotherCommandImplementation(ExecuteRunEditCexAddressDialog);
+
     private async void ExecuteRunEditCexAddressDialog(object? _)
     {
-        //let's set up a little MVVM, cos that's what the cool kids are doing:
         var view = new EditCexDialog()
         {
             DataContext = new EditCexDialogViewModel()
         };
 
-        //show the dialog
         var result = await DialogHost.Show(view, "RootDialog");
 
         if (result is true)
@@ -305,23 +304,39 @@ public class ViewModel : BaseViewModel
             accountInfoDto.CexAddress = inputCexAddress;
         }
 
-        //check the result...
         Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
     }
-    
+
     public ICommand RunDepositToAddressDialog => new AnotherCommandImplementation(ExecuteRunDepositToAddressDialog);
+
     private async void ExecuteRunDepositToAddressDialog(object? _)
     {
-        //let's set up a little MVVM, cos that's what the cool kids are doing:
         var view = new DepositToAddressDialog()
         {
             DataContext = new DepositToAddressDialogViewModel()
         };
 
-        //show the dialog
+        var result = await DialogHost.Show(view, "RootDialog");
+        
+        // Todo: Add logic to deposit 
+
+        Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+    }
+    
+    public ICommand RunWithdrawFromAddressDialog => new AnotherCommandImplementation(ExecuteRunWithdrawFromAddressDialog);
+
+    private async void ExecuteRunWithdrawFromAddressDialog(object? _)
+    {
+        var address = (_ as AccountInfoDto)?.Address;
+        var view = new WithdrawToCexDialog()
+        {
+            DataContext = new WithdrawToCexDialogViewModel(address)
+        };
+
         var result = await DialogHost.Show(view, "RootDialog");
 
-        //check the result...
+        // Todo: Add logic to withdraw funds from address
+        
         Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
     }
 

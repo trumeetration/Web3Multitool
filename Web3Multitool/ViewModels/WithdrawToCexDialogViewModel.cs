@@ -6,36 +6,57 @@ namespace Web3Multitool.ViewModels;
 
 public class WithdrawToCexDialogViewModel : BaseViewModel
 {
-    private string _selectedChain;
+    private string? _address;
 
-    public string SelectedChain
+    public WithdrawToCexDialogViewModel(string? address)
+    {
+        _address = address;
+    }
+
+    public ObservableCollection<string> AvailableChainCollection { get; set; } = new()
+    {
+        "ethereum",
+        "optimism",
+        "bsc",
+        "polygon",
+        "arbitrum",
+        "avalanche",
+        "fantom"
+    };
+
+    public ObservableCollection<string> AvailableCoinCollection { get; set; } = new()
+    {
+        "usdt",
+        "usdc",
+        "native"
+    };
+
+    private string? _selectedChain;
+
+    public string? SelectedChain
     {
         get => _selectedChain;
         set => SetField(ref _selectedChain, value);
     }
 
-    private string _coin;
+    private string? _selectedCoin;
 
-    public string Coin
+    public string? SelectedCoin
     {
-        get => _coin;
-        set => SetField(ref _coin, value);
+        get => _selectedCoin;
+        set
+        {
+            SetField(ref _selectedCoin, value);
+            // Todo: Get balance of chosen coin and chain and set to AvailableAmount
+        }
     }
-    
-    private double _amountFrom;
 
-    public double AmountFrom
-    {
-        get => _amountFrom;
-        set => SetField(ref _amountFrom, value);
-    }
-    
-    private double _amountTo;
+    private string? _withdrawAmount;
 
-    public double AmountTo
+    public string? WithdrawAmount
     {
-        get => _amountTo;
-        set => SetField(ref _amountTo, value);
+        get => _withdrawAmount;
+        set => SetField(ref _withdrawAmount, value);
     }
 
     private double _availableAmount;
@@ -44,5 +65,13 @@ public class WithdrawToCexDialogViewModel : BaseViewModel
     {
         get => _availableAmount;
         set => SetField(ref _availableAmount, value);
+    }
+
+    private bool _needToWithdrawAll;
+
+    public bool NeedToWithdrawAll
+    {
+        get => _needToWithdrawAll;
+        set { SetField(ref _needToWithdrawAll, value); }
     }
 }

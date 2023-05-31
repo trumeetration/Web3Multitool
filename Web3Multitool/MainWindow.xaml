@@ -178,6 +178,7 @@
                                                     Height="25"
                                                     Width="40"
                                                     ToolTip="Withdraw to CEX"
+                                                    Command="{Binding ElementName=MainWin, Path=DataContext.RunWithdrawFromAddressDialog}"
                                                     Margin="5,0,0,0"
                                                     Padding="0"/>
                                             </StackPanel>
