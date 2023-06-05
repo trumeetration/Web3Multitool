@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Web3Multitool.Dto;
-using Web3Multitool.Models;
 
 namespace Web3Multitool.ViewModels;
 

@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web3Multitool", "Web3Multitool\Web3Multitool.csproj", "{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web3MultiTool.Domain", "Web3MultiTool.Domain\Web3MultiTool.Domain.csproj", "{E7B0B302-583C-4C8C-837E-A4FC59918B2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web3Multitool.EntityFramework", "Web3Multitool.EntityFramework\Web3Multitool.EntityFramework.csproj", "{9D0E50AE-D1A3-4573-BEDB-3363A2D33045}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{938A93DD-2F57-4D97-9BF7-3AEE2FB397E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7B0B302-583C-4C8C-837E-A4FC59918B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7B0B302-583C-4C8C-837E-A4FC59918B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7B0B302-583C-4C8C-837E-A4FC59918B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7B0B302-583C-4C8C-837E-A4FC59918B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D0E50AE-D1A3-4573-BEDB-3363A2D33045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D0E50AE-D1A3-4573-BEDB-3363A2D33045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D0E50AE-D1A3-4573-BEDB-3363A2D33045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D0E50AE-D1A3-4573-BEDB-3363A2D33045}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

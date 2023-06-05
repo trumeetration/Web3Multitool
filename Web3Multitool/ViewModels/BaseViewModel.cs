@@ -20,4 +20,6 @@ public class BaseViewModel : INotifyPropertyChanged
         OnPropertyChanged(propertyName);
         return true;
     }
+    
+    protected virtual void Dispose() { }
 }
