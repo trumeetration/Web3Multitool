@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
 using Web3Multitool.Dialogs;
+using Web3MultiTool.Domain.Models;
 using Web3Multitool.Stores;
 using Web3Multitool.ViewModels;
 
@@ -18,7 +19,7 @@ public class EditCexAddressCommand : AsyncCommandBase
         _accountInfosStore = accountInfosStore;
     }
     
-    public override async Task ExecuteAsync(object selectedAccountInfoDto)
+    public override async Task ExecuteAsync(object data)
     {
         var view = new EditCexDialog()
         {
@@ -32,7 +33,24 @@ public class EditCexAddressCommand : AsyncCommandBase
             var dialogViewModel = view.DataContext as EditCexDialogViewModel;
             var inputCexAddress = dialogViewModel?.Address;
             Debug.WriteLine($"Entered address: {inputCexAddress}");
-            // (selectedAccountInfoDto as AccountInfoDto).CexAddress = inputCexAddress;
+
+            var selectedAccountInfo = data as AccountInfo;
+            var updatedAccountInfo = new AccountInfo
+            {
+                Id = selectedAccountInfo.Id,
+                Address = selectedAccountInfo.Address,
+                CexAddress = inputCexAddress,
+                PrivateKey = selectedAccountInfo.PrivateKey,
+                FantomInfo = selectedAccountInfo.FantomInfo,
+                AvaxInfo = selectedAccountInfo.AvaxInfo,
+                PolygonInfo = selectedAccountInfo.PolygonInfo,
+                ArbitrumInfo = selectedAccountInfo.ArbitrumInfo,
+                OptimismInfo = selectedAccountInfo.OptimismInfo,
+                TotalBalanceUsd = selectedAccountInfo.TotalBalanceUsd,
+                TotalTxAmount = selectedAccountInfo.TotalTxAmount
+            };
+
+            await _accountInfosStore.Update(updatedAccountInfo);
         }
 
         Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
