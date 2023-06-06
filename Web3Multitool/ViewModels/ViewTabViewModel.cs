@@ -40,7 +40,8 @@ public class ViewTabViewModel : BaseViewModel
         _accountInfosStore.AccountInfoDeleted += AccountInfosStoreOnAccountInfoDeleted;
         _accountInfosStore.AccountInfosCleared += AccountInfosStoreOnAccountInfosCleared;
         _accountInfosStore.AccountInfosLoaded += AccountInfosStoreOnAccountInfosLoaded;
-
+        _accountInfosStore.AccountInfoUpdated += AccountInfosStoreOnAccountInfoUpdated;
+        
         LoadAccountInfosCommand = new LoadAccountInfosCommand(this, _accountInfosStore);
         ImportAccountsFromFileCommand = new ImportAccountsFromFileCommand(this, _accountInfosStore);
         ExportAccountsToFileCommand = new ExportAccountsToFileCommand(this, _accountInfosStore);
@@ -55,8 +56,14 @@ public class ViewTabViewModel : BaseViewModel
         _accountInfosStore.AccountInfoDeleted -= AccountInfosStoreOnAccountInfoDeleted;
         _accountInfosStore.AccountInfosCleared -= AccountInfosStoreOnAccountInfosCleared;
         _accountInfosStore.AccountInfosLoaded -= AccountInfosStoreOnAccountInfosLoaded;
-
+        _accountInfosStore.AccountInfoUpdated += AccountInfosStoreOnAccountInfoUpdated;
+        
         base.Dispose();
+    }
+    
+    private void AccountInfosStoreOnAccountInfoUpdated(AccountInfo accountInfo)
+    {
+        _accountInfos.FirstOrDefault(x => x.Id == accountInfo.Id).CexAddress = accountInfo.CexAddress;
     }
 
     private void AccountInfosStoreOnAccountInfosLoaded()
@@ -84,6 +91,7 @@ public class ViewTabViewModel : BaseViewModel
 
     private void AccountInfosStoreOnAccountInfosAdded(IEnumerable<AccountInfo> accountInfos)
     {
+        _accountInfos.Clear();
         foreach (var accountInfo in accountInfos)
         {
             _accountInfos.Add(accountInfo);
