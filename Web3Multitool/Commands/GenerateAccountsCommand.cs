@@ -33,13 +33,14 @@ public class GenerateAccountsCommand : AsyncCommandBase
             
             var accInfo = new AccountInfo
             {
+                Id = Guid.NewGuid(),
                 PrivateKey = privateKey,
                 Address = address,
-                FantomInfo = new AddressChainInfo { ChainId = 250 },
-                AvaxInfo = new AddressChainInfo { ChainId = 43114 },
-                PolygonInfo = new AddressChainInfo { ChainId = 137 },
-                ArbitrumInfo = new AddressChainInfo { ChainId = 42161 },
-                OptimismInfo = new AddressChainInfo { ChainId = 10 }
+                FantomInfo = new AddressChainInfo { ChainId = 250, Id = Guid.NewGuid() },
+                AvaxInfo = new AddressChainInfo { ChainId = 43114, Id = Guid.NewGuid() },
+                PolygonInfo = new AddressChainInfo { ChainId = 137, Id = Guid.NewGuid() },
+                ArbitrumInfo = new AddressChainInfo { ChainId = 42161, Id = Guid.NewGuid() },
+                OptimismInfo = new AddressChainInfo { ChainId = 10, Id = Guid.NewGuid() }
             };
             
             newAccountInfos.Add(accInfo);
@@ -47,6 +48,7 @@ public class GenerateAccountsCommand : AsyncCommandBase
 
         try
         {
+            await _accountInfosStore.Clear();
             await _accountInfosStore.Add(newAccountInfos);
         }
         catch (Exception e)
