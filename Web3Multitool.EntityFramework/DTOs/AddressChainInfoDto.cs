@@ -5,7 +5,7 @@ namespace Web3Multitool.EntityFramework.DTOs;
 [Table("AddressChainInfos")]
 public class AddressChainInfoDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public int ChainId { get; set; }
     public int TxAmount { get; set; }
     public double BaseBalance { get; set; }

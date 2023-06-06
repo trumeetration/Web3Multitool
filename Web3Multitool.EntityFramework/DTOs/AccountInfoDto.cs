@@ -6,7 +6,7 @@ namespace Web3Multitool.EntityFramework.DTOs;
 [Table("AccountInfo")]
 public class AccountInfoDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Address { get; set; }
     [MaybeNull]
     public string? CexAddress { get; set; }
