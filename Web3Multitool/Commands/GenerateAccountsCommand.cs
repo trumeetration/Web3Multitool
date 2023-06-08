@@ -23,6 +23,8 @@ public class GenerateAccountsCommand : AsyncCommandBase
     
     public override async Task ExecuteAsync(object parameter)
     {
+        _viewTabViewModel.IsLoading = true;
+        
         var amount = int.Parse(_viewTabViewModel.GenerateInputAmount);
         _viewTabViewModel.GenerateInputAmount = string.Empty;
 
@@ -35,12 +37,7 @@ public class GenerateAccountsCommand : AsyncCommandBase
             {
                 Id = Guid.NewGuid(),
                 PrivateKey = privateKey,
-                Address = address,
-                FantomInfo = new AddressChainInfo { ChainId = 250, Id = Guid.NewGuid() },
-                AvaxInfo = new AddressChainInfo { ChainId = 43114, Id = Guid.NewGuid() },
-                PolygonInfo = new AddressChainInfo { ChainId = 137, Id = Guid.NewGuid() },
-                ArbitrumInfo = new AddressChainInfo { ChainId = 42161, Id = Guid.NewGuid() },
-                OptimismInfo = new AddressChainInfo { ChainId = 10, Id = Guid.NewGuid() }
+                Address = address
             };
             
             newAccountInfos.Add(accInfo);
@@ -48,6 +45,7 @@ public class GenerateAccountsCommand : AsyncCommandBase
 
         try
         {
+            await Task.Delay(1000);
             await _accountInfosStore.Clear();
             await _accountInfosStore.Add(newAccountInfos);
         }
@@ -58,7 +56,8 @@ public class GenerateAccountsCommand : AsyncCommandBase
         }
         finally
         {
-            
+            await Task.Delay(1000);
+            _viewTabViewModel.IsLoading = false;
         }
     }
     
