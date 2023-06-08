@@ -11,6 +11,7 @@ public class AddressChainInfo : INotifyPropertyChanged
     private double _baseBalance;
     private DateTime _firstTxDate;
     private double _usdcBalance;
+    private double _usdtBalance;
 
     public Guid Id
     {
@@ -46,6 +47,12 @@ public class AddressChainInfo : INotifyPropertyChanged
     {
         get => _usdcBalance;
         set => SetField(ref _usdcBalance, value);
+    }
+    
+    public double UsdtBalance
+    {
+        get => _usdtBalance;
+        set => SetField(ref _usdtBalance, value);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

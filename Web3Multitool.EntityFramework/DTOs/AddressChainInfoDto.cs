@@ -11,4 +11,5 @@ public class AddressChainInfoDto
     public double BaseBalance { get; set; }
     public DateTime FirstTxDate { get; set; }
     public double UsdcBalance { get; set; }
+    public double UsdtBalance { get; set; }
 }
