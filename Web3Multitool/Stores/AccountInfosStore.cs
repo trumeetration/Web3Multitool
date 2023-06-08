@@ -19,7 +19,8 @@ public class AccountInfosStore
     public IEnumerable<AccountInfo> AccountInfos => _accountInfos;
 
     public event Action? AccountInfosLoaded;
-    public event Action<IEnumerable<AccountInfo>>? AccountInfosAdded;
+    public event Action<IEnumerable<AccountInfo>>? AccountInfosGenerated;
+    public event Action<IEnumerable<AccountInfo>>? AccountInfosImported;
     public event Action<AccountInfo>? AccountInfoUpdated;
     public event Action<string>? AccountInfoDeleted;
     public event Action? AccountInfosCleared;
@@ -47,7 +48,7 @@ public class AccountInfosStore
         
         _accountInfos.AddRange(accountInfos);
         
-        AccountInfosAdded?.Invoke(accountInfos);
+        AccountInfosImported?.Invoke(accountInfos);
     }
 
     public async Task Load()
