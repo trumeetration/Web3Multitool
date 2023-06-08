@@ -91,6 +91,9 @@ namespace Web3Multitool.EntityFramework.Migrations
                     b.Property<double>("UsdcBalance")
                         .HasColumnType("REAL");
 
+                    b.Property<double>("UsdtBalance")
+                        .HasColumnType("REAL");
+
                     b.HasKey("Id");
 
                     b.ToTable("AddressChainInfos");
