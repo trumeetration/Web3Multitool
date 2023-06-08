@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using Nethereum.Signer;
+using Web3MultiTool.Domain.Models;
 using Web3Multitool.Stores;
 using Web3Multitool.ViewModels;
 
@@ -30,19 +32,31 @@ public class ImportAccountsFromFileCommand : AsyncCommandBase
             return;
         var content = await File.ReadAllLinesAsync(dialog.FileName);
 
+        var newAccountInfos = new List<AccountInfo>();
+
         foreach (var line in content)
         {
+            string? cexAddress = null;
             var privateKey = line.Contains(':')
                 ? line.Split(':')[0]
                 : line.Trim().Replace(Environment.NewLine, String.Empty);
 
             if (privateKey.Length == 0) continue;
+            
             var address = EthECKey.GetPublicAddress(privateKey);
-            // _viewTabViewModel.AccountInfos.Add(new AccountInfoDto
-            // {
-            //     Address = address,
-            //     PrivateKey = privateKey
-            // });
+
+            if (line.Split(':').Length == 3)
+                cexAddress = line.Split(':')[2]; // Also set CEX address
+            
+            newAccountInfos.Add(new AccountInfo
+            {
+                Id = Guid.NewGuid(),
+                Address = address,
+                PrivateKey = privateKey,
+                CexAddress = cexAddress
+            });
         }
+
+        await _accountInfosStore.Add(newAccountInfos);
     }
 }
