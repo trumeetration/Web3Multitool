@@ -63,7 +63,8 @@ public static class Extensions
             TxAmount = addressChainInfo.TxAmount,
             BaseBalance = addressChainInfo.BaseBalance,
             FirstTxDate = addressChainInfo.FirstTxDate,
-            UsdcBalance = addressChainInfo.UsdcBalance
+            UsdcBalance = addressChainInfo.UsdcBalance,
+            UsdtBalance = addressChainInfo.UsdtBalance
         };
     }
 }
