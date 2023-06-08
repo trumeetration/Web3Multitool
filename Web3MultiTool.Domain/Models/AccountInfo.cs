@@ -16,6 +16,22 @@ public class AccountInfo : INotifyPropertyChanged
     private AddressChainInfo _arbitrumInfo;
     private AddressChainInfo _optimismInfo;
     private double _totalBalanceUsd;
+    private bool _isSelected;
+
+    public AccountInfo()
+    {
+        FantomInfo = new AddressChainInfo { ChainId = 250, Id = Guid.NewGuid() };
+        AvaxInfo = new AddressChainInfo { ChainId = 43114, Id = Guid.NewGuid() };
+        PolygonInfo = new AddressChainInfo { ChainId = 137, Id = Guid.NewGuid() };
+        ArbitrumInfo = new AddressChainInfo { ChainId = 42161, Id = Guid.NewGuid() };
+        OptimismInfo = new AddressChainInfo { ChainId = 10, Id = Guid.NewGuid() };
+    }
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetField(ref _isSelected, value);
+    }
 
     public Guid Id
     {
