@@ -43,7 +43,7 @@ namespace Web3Multitool
                     services.AddSingleton<IGetAllAccountsQuery, GetAllAccountsQuery>();
 
                     services.AddSingleton<AccountInfosStore>();
-
+                    
                     services.AddTransient(CreateViewTabViewModel);
                     services.AddSingleton<MainViewModel>();
 
