@@ -23,17 +23,19 @@ using Web3Multitool.Dialogs;
 using Web3Multitool.Models;
 using Web3Multitool.Stores;
 using Web3Multitool.Utils;
+using Chain = Web3Multitool.Utils.Chain;
 
 namespace Web3Multitool.ViewModels;
 
 public class MainViewModel : BaseViewModel
 {
     public ViewTabViewModel ViewTabViewModel { get; }
-    private Web3Utils _web3Utils;
+    public Web3Utils Web3Utils;
     
     public MainViewModel(ViewTabViewModel viewTabViewModel)
     {
         ViewTabViewModel = viewTabViewModel;
+        ViewTabViewModel.MainViewModel = this;
 
         LoadConfigInfo();
         ConnectToRpcList();
@@ -185,19 +187,19 @@ public class MainViewModel : BaseViewModel
 
     private void ConnectToRpcList()
     {
-        var dict = new Dictionary<int, string>();
+        var dict = new Dictionary<Chain, string>();
         if (Uri.IsWellFormedUriString(ArbitrumRPC, UriKind.RelativeOrAbsolute))
-            dict.Add(42161, ArbitrumRPC);
+            dict.Add(Chain.Arbitrum, ArbitrumRPC);
         if (Uri.IsWellFormedUriString(FantomRPC, UriKind.RelativeOrAbsolute))
-            dict.Add(250, FantomRPC);
+            dict.Add(Chain.Fantom, FantomRPC);
         if (Uri.IsWellFormedUriString(PolygonRPC, UriKind.RelativeOrAbsolute))
-            dict.Add(137, PolygonRPC);
+            dict.Add(Chain.Polygon, PolygonRPC);
         if (Uri.IsWellFormedUriString(OptimismRPC, UriKind.RelativeOrAbsolute))
-            dict.Add(10, OptimismRPC);
+            dict.Add(Chain.Optimism, OptimismRPC);
         if (Uri.IsWellFormedUriString(AVAXRPC, UriKind.RelativeOrAbsolute))
-            dict.Add(43114, AVAXRPC);
+            dict.Add(Chain.Avalanche, AVAXRPC);
 
         if (dict.Any())
-            _web3Utils = new Web3Utils(dict);
+            Web3Utils = new Web3Utils(dict);
     }
 }
