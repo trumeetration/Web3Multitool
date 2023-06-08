@@ -19,6 +19,7 @@ namespace Web3Multitool.ViewModels;
 public class ViewTabViewModel : BaseViewModel
 {
     private readonly AccountInfosStore _accountInfosStore;
+    public MainViewModel MainViewModel;
 
     private readonly ObservableCollection<AccountInfo> _accountInfos;
     public IEnumerable<AccountInfo> AccountInfos => _accountInfos;
@@ -29,6 +30,8 @@ public class ViewTabViewModel : BaseViewModel
     public ICommand EditCexAddressCommand { get; }
     public ICommand GenerateAccountsCommand { get; }
     public ICommand LoadAccountInfosCommand { get; }
+
+    public ICommand SyncAccountsDataCommand { get; }
     
 
     public ViewTabViewModel(AccountInfosStore accountInfosStore)
@@ -36,11 +39,12 @@ public class ViewTabViewModel : BaseViewModel
         _accountInfosStore = accountInfosStore;
         _accountInfos = new ObservableCollection<AccountInfo>();
         
-        _accountInfosStore.AccountInfosAdded += AccountInfosStoreOnAccountInfosAdded;
+        _accountInfosStore.AccountInfosGenerated += AccountInfosStoreOnAccountInfosGenerated;
         _accountInfosStore.AccountInfoDeleted += AccountInfosStoreOnAccountInfoDeleted;
         _accountInfosStore.AccountInfosCleared += AccountInfosStoreOnAccountInfosCleared;
         _accountInfosStore.AccountInfosLoaded += AccountInfosStoreOnAccountInfosLoaded;
         _accountInfosStore.AccountInfoUpdated += AccountInfosStoreOnAccountInfoUpdated;
+        _accountInfosStore.AccountInfosImported += AccountInfosStoreOnAccountInfosImported;
         
         LoadAccountInfosCommand = new LoadAccountInfosCommand(this, _accountInfosStore);
         ImportAccountsFromFileCommand = new ImportAccountsFromFileCommand(this, _accountInfosStore);
@@ -48,17 +52,28 @@ public class ViewTabViewModel : BaseViewModel
         ClearAccountInfosCommand = new ClearAccountInfosCommand(this, _accountInfosStore);
         EditCexAddressCommand = new EditCexAddressCommand(this, _accountInfosStore);
         GenerateAccountsCommand = new GenerateAccountsCommand(this, _accountInfosStore);
+        SyncAccountsDataCommand = new SyncAccountsDataCommand(this, accountInfosStore);
     }
 
     protected override void Dispose()
     {
-        _accountInfosStore.AccountInfosAdded -= AccountInfosStoreOnAccountInfosAdded;
+        _accountInfosStore.AccountInfosGenerated -= AccountInfosStoreOnAccountInfosGenerated;
         _accountInfosStore.AccountInfoDeleted -= AccountInfosStoreOnAccountInfoDeleted;
         _accountInfosStore.AccountInfosCleared -= AccountInfosStoreOnAccountInfosCleared;
         _accountInfosStore.AccountInfosLoaded -= AccountInfosStoreOnAccountInfosLoaded;
         _accountInfosStore.AccountInfoUpdated += AccountInfosStoreOnAccountInfoUpdated;
-        
+        _accountInfosStore.AccountInfosImported -= AccountInfosStoreOnAccountInfosImported;
+
         base.Dispose();
+    }
+    
+    private void AccountInfosStoreOnAccountInfosImported(IEnumerable<AccountInfo> accountInfos)
+    {
+        foreach (var accountInfo in accountInfos)
+        {
+            _accountInfos.Add(accountInfo);
+        }
+        OnPropertyChanged(nameof(AnyAccountExists));
     }
     
     private void AccountInfosStoreOnAccountInfoUpdated(AccountInfo accountInfo)
@@ -74,28 +89,36 @@ public class ViewTabViewModel : BaseViewModel
         {
             _accountInfos.Add(accountInfo);
         }
+        
+        OnPropertyChanged(nameof(AnyAccountExists));
     }
 
     private void AccountInfosStoreOnAccountInfosCleared()
     {
         _accountInfos.Clear();
+        OnPropertyChanged(nameof(AnyAccountExists));
     }
 
     private void AccountInfosStoreOnAccountInfoDeleted(string address)
     {
         var accountInfo = _accountInfos.FirstOrDefault(accInfo => accInfo.Address == address);
-
+        
         if (accountInfo != null)
             _accountInfos.Remove(accountInfo);
+        
+        OnPropertyChanged(nameof(AnyAccountExists));
     }
 
-    private void AccountInfosStoreOnAccountInfosAdded(IEnumerable<AccountInfo> accountInfos)
+    private void AccountInfosStoreOnAccountInfosGenerated(IEnumerable<AccountInfo> accountInfos)
     {
         _accountInfos.Clear();
+        
         foreach (var accountInfo in accountInfos)
         {
             _accountInfos.Add(accountInfo);
         }
+        
+        OnPropertyChanged(nameof(AnyAccountExists));
     }
 
     private string _generateInputAmount;
@@ -103,8 +126,24 @@ public class ViewTabViewModel : BaseViewModel
     public string GenerateInputAmount
     {
         get => _generateInputAmount;
-        set => SetField(ref _generateInputAmount, value);
+        set
+        {
+            SetField(ref _generateInputAmount, value);
+            OnPropertyChanged(nameof(CanGenerate));
+        }
     }
+
+    private bool _isLoading;
+
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set => SetField(ref _isLoading, value);
+    }
+
+    public bool CanGenerate => int.TryParse(GenerateInputAmount, out _);
+
+    public bool AnyAccountExists => AccountInfos.Any();
 
     public static ViewTabViewModel LoadViewModel(AccountInfosStore accountInfosStore)
     {
