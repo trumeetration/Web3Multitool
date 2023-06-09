@@ -8,7 +8,7 @@ public class AddressChainInfo : INotifyPropertyChanged
     private Guid _id;
     private int _chainId;
     private int _txAmount;
-    private double _baseBalance;
+    private double _nativeBalance;
     private DateTime _firstTxDate;
     private double _usdcBalance;
     private double _usdtBalance;
@@ -31,10 +31,10 @@ public class AddressChainInfo : INotifyPropertyChanged
         set => SetField(ref _txAmount, value);
     }
 
-    public double BaseBalance
+    public double NativeBalance
     {
-        get => _baseBalance;
-        set => SetField(ref _baseBalance, value);
+        get => _nativeBalance;
+        set => SetField(ref _nativeBalance, value);
     }
 
     public DateTime FirstTxDate

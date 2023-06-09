@@ -12,7 +12,7 @@ public static class Extensions
             Id = addressChainInfoDto.Id,
             ChainId = addressChainInfoDto.ChainId,
             TxAmount = addressChainInfoDto.TxAmount,
-            BaseBalance = addressChainInfoDto.BaseBalance,
+            NativeBalance = addressChainInfoDto.NativeBalance,
             FirstTxDate = addressChainInfoDto.FirstTxDate,
             UsdcBalance = addressChainInfoDto.UsdcBalance,
         };
@@ -61,7 +61,7 @@ public static class Extensions
             Id = addressChainInfo.Id,
             ChainId = addressChainInfo.ChainId,
             TxAmount = addressChainInfo.TxAmount,
-            BaseBalance = addressChainInfo.BaseBalance,
+            NativeBalance = addressChainInfo.NativeBalance,
             FirstTxDate = addressChainInfo.FirstTxDate,
             UsdcBalance = addressChainInfo.UsdcBalance,
             UsdtBalance = addressChainInfo.UsdtBalance
