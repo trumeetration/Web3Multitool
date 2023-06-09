@@ -14,6 +14,9 @@
         MaxWidth="1100"
         MinHeight="700"
         MaxHeight="700">
+    <Window.Resources>
+        <converters:DoubleValuesConverter x:Key="CurrencyRateConverter"></converters:DoubleValuesConverter>
+    </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
         <Grid>
             <materialDesign:Card>
@@ -160,6 +163,38 @@
                     </TabItem>
                 </TabControl>
             </materialDesign:Card>
+            <StackPanel
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Width="71">
+                <GroupBox
+                    Header="Currency rate"
+                    FontSize="9"
+                    Padding="5">
+                    <StackPanel>
+                        <TextBlock>
+                            <Run Text="ETH - "/>
+                            <Run Text="{Binding EthPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="BNB - "/>
+                            <Run Text="{Binding BnbPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="MATIC - "/>
+                            <Run Text="{Binding MaticPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="AVAX - "/>
+                            <Run Text="{Binding AvaxPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="FTM - "/>
+                            <Run Text="{Binding FtmPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
         </Grid>
     </materialDesign:DialogHost>
 </Window>

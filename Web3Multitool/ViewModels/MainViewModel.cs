@@ -6,9 +6,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -18,6 +20,7 @@ using Microsoft.Win32;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using Nethereum.Util;
+using Newtonsoft.Json.Linq;
 using Web3Multitool.Commands;
 using Web3Multitool.Dialogs;
 using Web3Multitool.Models;
@@ -29,6 +32,8 @@ namespace Web3Multitool.ViewModels;
 
 public class MainViewModel : BaseViewModel
 {
+    private Timer _timer;
+    
     public ViewTabViewModel ViewTabViewModel { get; }
     public Web3Utils Web3Utils;
     
@@ -39,6 +44,42 @@ public class MainViewModel : BaseViewModel
 
         LoadConfigInfo();
         ConnectToRpcList();
+
+        _timer = new Timer(60000);
+        _timer.Elapsed += async (_, _) => await GetCurrenciesRate();
+        _timer.Start();
+
+        GetCurrenciesRate().Wait();
+    }
+
+    private async Task GetCurrenciesRate()
+    {
+        try
+        {
+            using (var client = new HttpClient())
+            {
+                var response =
+                    await client.GetAsync(
+                        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,avalanche-2,fantom,matic-network&vs_currencies=usd&precision=2").ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                var data = JObject.Parse(content);
+
+                if (data != null)
+                {
+                    AvaxPrice = (double)data["avalanche-2"]["usd"];
+                    BnbPrice = (double)data["binancecoin"]["usd"];
+                    EthPrice = (double)data["ethereum"]["usd"];
+                    FtmPrice = (double)data["fantom"]["usd"];
+                    MaticPrice = (double)data["matic-network"]["usd"];
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
+        }
     }
 
     private string _binanceAPI;
@@ -46,11 +87,7 @@ public class MainViewModel : BaseViewModel
     public string BinanceAPI
     {
         get => _binanceAPI;
-        set
-        {
-            _binanceAPI = value?.Trim();
-            OnPropertyChanged(nameof(BinanceAPI));
-        }
+        set => SetField(ref _binanceAPI, value);
     }
 
     private string _bybitAPI;
@@ -58,11 +95,7 @@ public class MainViewModel : BaseViewModel
     public string BybitAPI
     {
         get => _bybitAPI;
-        set
-        {
-            _bybitAPI = value?.Trim();
-            OnPropertyChanged(nameof(BybitAPI));
-        }
+        set => SetField(ref _bybitAPI, value);
     }
 
     private string _okxAPI;
@@ -70,11 +103,7 @@ public class MainViewModel : BaseViewModel
     public string OKXAPI
     {
         get => _okxAPI;
-        set
-        {
-            _okxAPI = value?.Trim();
-            OnPropertyChanged(nameof(OKXAPI));
-        }
+        set => SetField(ref _okxAPI, value);
     }
 
     private string _arbitrumRPC;
@@ -82,11 +111,7 @@ public class MainViewModel : BaseViewModel
     public string ArbitrumRPC
     {
         get => _arbitrumRPC;
-        set
-        {
-            _arbitrumRPC = value?.Trim();
-            OnPropertyChanged(nameof(ArbitrumRPC));
-        }
+        set => SetField(ref _arbitrumRPC, value);
     }
 
     private string _fantomRPC;
@@ -94,11 +119,7 @@ public class MainViewModel : BaseViewModel
     public string FantomRPC
     {
         get => _fantomRPC;
-        set
-        {
-            _fantomRPC = value?.Trim();
-            OnPropertyChanged(nameof(FantomRPC));
-        }
+        set => SetField(ref _fantomRPC, value);
     }
 
     private string _avaxRPC;
@@ -106,11 +127,7 @@ public class MainViewModel : BaseViewModel
     public string AVAXRPC
     {
         get => _avaxRPC;
-        set
-        {
-            _avaxRPC = value.Trim();
-            OnPropertyChanged(nameof(AVAXRPC));
-        }
+        set => SetField(ref _avaxRPC, value);
     }
 
     private string _polygonRPC;
@@ -118,11 +135,7 @@ public class MainViewModel : BaseViewModel
     public string PolygonRPC
     {
         get => _polygonRPC;
-        set
-        {
-            _polygonRPC = value?.Trim();
-            OnPropertyChanged(nameof(PolygonRPC));
-        }
+        set => SetField(ref _polygonRPC, value);
     }
 
     private string _optimismRPC;
@@ -130,11 +143,47 @@ public class MainViewModel : BaseViewModel
     public string OptimismRPC
     {
         get => _optimismRPC;
-        set
-        {
-            _optimismRPC = value?.Trim();
-            OnPropertyChanged(nameof(OptimismRPC));
-        }
+        set => SetField(ref _optimismRPC, value);
+    }
+
+    private double _ethPrice;
+
+    public double EthPrice
+    {
+        get => _ethPrice;
+        set => SetField(ref _ethPrice, value);
+    }
+
+    private double _ftmPrice;
+
+    public double FtmPrice
+    {
+        get => _ftmPrice;
+        set => SetField(ref _ftmPrice, value);
+    }
+
+    private double _maticPrice;
+
+    public double MaticPrice
+    {
+        get => _maticPrice;
+        set => SetField(ref _maticPrice, value);
+    }
+    
+    private double _bnbPrice;
+
+    public double BnbPrice
+    {
+        get => _bnbPrice;
+        set => SetField(ref _bnbPrice, value);
+    }
+    
+    private double _avaxPrice;
+
+    public double AvaxPrice
+    {
+        get => _avaxPrice;
+        set => SetField(ref _avaxPrice, value);
     }
 
     public ICommand SaveConfigData
