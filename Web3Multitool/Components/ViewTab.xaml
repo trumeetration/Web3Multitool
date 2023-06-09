@@ -13,8 +13,9 @@
              Name="ViewTabView"
              d:DesignHeight="1100" d:DesignWidth="1000">
     <UserControl.Resources>
-        <converters:AddressConverter x:Key="AddressConverter"></converters:AddressConverter>
-        <converters:DateConverter x:Key="DateConverter"></converters:DateConverter>
+        <converters:AddressConverter x:Key="AddressConverter" />
+        <converters:DateConverter x:Key="DateConverter" />
+        <converters:DoubleValuesConverter x:Key="DoubleValuesConverter" />
     </UserControl.Resources>
     <StackPanel
         Margin="16">
@@ -31,13 +32,12 @@
             </Grid.ColumnDefinitions>
             
             <Button
+                Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                 IsEnabled="{Binding AnyAccountExists}"
                 Command="{Binding SyncAccountsDataCommand}"
-                Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryLightButton}"
-                ToolTip="MaterialDesignFloatingActionMiniSecondaryLightButton">
+                Style="{StaticResource MaterialDesignIconButton}"
+                ToolTip="MaterialDesignIconButton">
                 <materialDesign:PackIcon
-                    Width="20"
-                    Height="20"
                     Kind="CashSync" />
             </Button>
             <StackPanel
@@ -122,25 +122,25 @@
                         Binding="{Binding CexAddress, Converter={StaticResource AddressConverter}}"
                         Header="CEX Address" />
                     <DataGridTextColumn
-                        Binding="{Binding FantomInfo.BaseBalance}"
+                        Binding="{Binding FantomInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}"
                         Header="FTM" />
                     <DataGridTextColumn
-                        Binding="{Binding AvaxInfo.BaseBalance}"
+                        Binding="{Binding AvaxInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}"
                         Header="AVAX" />
                     <DataGridTextColumn
-                        Binding="{Binding PolygonInfo.BaseBalance}"
+                        Binding="{Binding PolygonInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}"
                         Header="Matic" />
                     <DataGridTextColumn
-                        Binding="{Binding ArbitrumInfo.BaseBalance}"
+                        Binding="{Binding ArbitrumInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}"
                         Header="Arbitrum" />
                     <DataGridTextColumn
-                        Binding="{Binding OptimismInfo.BaseBalance}"
+                        Binding="{Binding OptimismInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}"
                         Header="Optimism" />
                     <DataGridTextColumn
                         Binding="{Binding TotalTxAmount}"
                         Header="Total tx" />
                     <DataGridTextColumn
-                        Binding="{Binding TotalBalanceUsd}"
+                        Binding="{Binding TotalBalanceUsd, Converter={StaticResource DoubleValuesConverter}}"
                         Header="Total USD" />
                     <DataGridTemplateColumn
                         Header="Actions">
@@ -206,6 +206,8 @@
                                     <RowDefinition Height="30"></RowDefinition>
                                     <RowDefinition Height="2"></RowDefinition>
                                     <RowDefinition Height="30"></RowDefinition>
+                                    <RowDefinition Height="2"></RowDefinition>
+                                    <RowDefinition Height="30"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <TextBlock
                                     Grid.Column="1"
@@ -213,7 +215,7 @@
                                     FontWeight="Medium"
                                     Foreground="#BC000000"
                                     VerticalAlignment="Center"
-                                    Text="BSC" />
+                                    Text="FTM" />
                                 <TextBlock
                                     Grid.Column="2"
                                     Grid.Row="0"
@@ -241,7 +243,7 @@
                                     FontWeight="Medium"
                                     Foreground="#BC000000"
                                     VerticalAlignment="Center"
-                                    Text="Fantom" />
+                                    Text="Optimism" />
                                 <GridSplitter
                                     Grid.Row="1"
                                     Grid.Column="0"
@@ -294,13 +296,26 @@
                                     FontWeight="Medium"
                                     Foreground="#BC000000"
                                     VerticalAlignment="Center"
+                                    Text="UsdcBalance" />
+                                <GridSplitter
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="6"
+                                    Height="2"
+                                    HorizontalAlignment="Stretch" />
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Grid.Row="10"
+                                    FontWeight="Medium"
+                                    Foreground="#BC000000"
+                                    VerticalAlignment="Center"
                                     Text="UsdtBalance" />
 
                                 <TextBlock
                                     Grid.Column="1"
                                     Grid.Row="2"
                                     VerticalAlignment="Center"
-                                    Text="{Binding FantomInfo.BaseBalance}" />
+                                    Text="{Binding FantomInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}" />
                                 <TextBlock
                                     Grid.Column="1"
                                     Grid.Row="4"
@@ -315,13 +330,18 @@
                                     Grid.Column="1"
                                     Grid.Row="8"
                                     VerticalAlignment="Center"
-                                    Text="{Binding FantomInfo.UsdcBalance}" />
-
+                                    Text="{Binding FantomInfo.UsdcBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Grid.Row="10"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding FantomInfo.UsdtBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                
                                 <TextBlock
                                     Grid.Column="2"
                                     Grid.Row="2"
                                     VerticalAlignment="Center"
-                                    Text="{Binding AvaxInfo.BaseBalance}" />
+                                    Text="{Binding AvaxInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}" />
                                 <TextBlock
                                     Grid.Column="2"
                                     Grid.Row="4"
@@ -336,13 +356,18 @@
                                     Grid.Column="2"
                                     Grid.Row="8"
                                     VerticalAlignment="Center"
-                                    Text="{Binding AvaxInfo.UsdcBalance}" />
+                                    Text="{Binding AvaxInfo.UsdcBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Grid.Row="10"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding AvaxInfo.UsdtBalance, Converter={StaticResource DoubleValuesConverter}}" />
 
                                 <TextBlock
                                     Grid.Column="3"
                                     Grid.Row="2"
                                     VerticalAlignment="Center"
-                                    Text="{Binding PolygonInfo.BaseBalance}" />
+                                    Text="{Binding PolygonInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}" />
                                 <TextBlock
                                     Grid.Column="3"
                                     Grid.Row="4"
@@ -357,13 +382,18 @@
                                     Grid.Column="3"
                                     Grid.Row="8"
                                     VerticalAlignment="Center"
-                                    Text="{Binding PolygonInfo.UsdcBalance}" />
-
+                                    Text="{Binding PolygonInfo.UsdcBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Grid.Row="10"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding PolygonInfo.UsdtBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                
                                 <TextBlock
                                     Grid.Column="4"
                                     Grid.Row="2"
                                     VerticalAlignment="Center"
-                                    Text="{Binding ArbitrumInfo.BaseBalance}" />
+                                    Text="{Binding ArbitrumInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}" />
                                 <TextBlock
                                     Grid.Column="4"
                                     Grid.Row="4"
@@ -378,13 +408,18 @@
                                     Grid.Column="4"
                                     Grid.Row="8"
                                     VerticalAlignment="Center"
-                                    Text="{Binding ArbitrumInfo.UsdcBalance}" />
+                                    Text="{Binding ArbitrumInfo.UsdcBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                <TextBlock
+                                    Grid.Column="4"
+                                    Grid.Row="10"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding ArbitrumInfo.UsdtBalance, Converter={StaticResource DoubleValuesConverter}}" />
 
                                 <TextBlock
                                     Grid.Column="5"
                                     Grid.Row="2"
                                     VerticalAlignment="Center"
-                                    Text="{Binding OptimismInfo.BaseBalance}" />
+                                    Text="{Binding OptimismInfo.NativeBalance, Converter={StaticResource DoubleValuesConverter}}" />
                                 <TextBlock
                                     Grid.Column="5"
                                     Grid.Row="4"
@@ -399,7 +434,12 @@
                                     Grid.Column="5"
                                     Grid.Row="8"
                                     VerticalAlignment="Center"
-                                    Text="{Binding OptimismInfo.UsdcBalance}" />
+                                    Text="{Binding OptimismInfo.UsdcBalance, Converter={StaticResource DoubleValuesConverter}}" />
+                                <TextBlock
+                                    Grid.Column="5"
+                                    Grid.Row="10"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding OptimismInfo.UsdtBalance, Converter={StaticResource DoubleValuesConverter}}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
