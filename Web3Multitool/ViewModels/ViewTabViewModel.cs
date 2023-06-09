@@ -78,7 +78,9 @@ public class ViewTabViewModel : BaseViewModel
     
     private void AccountInfosStoreOnAccountInfoUpdated(AccountInfo accountInfo)
     {
-        _accountInfos.FirstOrDefault(x => x.Id == accountInfo.Id).CexAddress = accountInfo.CexAddress;
+        var accountToUpdate = _accountInfos.FirstOrDefault(x => x.Id == accountInfo.Id);
+        var indexOfAccount = _accountInfos.IndexOf(accountToUpdate);
+        _accountInfos[indexOfAccount] = accountInfo;
     }
 
     private void AccountInfosStoreOnAccountInfosLoaded()
