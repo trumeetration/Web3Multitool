@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Web3MultiTool.Domain.Utils;
 
 namespace Web3MultiTool.Domain.Models;
 
@@ -20,11 +21,11 @@ public class AccountInfo : INotifyPropertyChanged
 
     public AccountInfo()
     {
-        FantomInfo = new AddressChainInfo { ChainId = 250, Id = Guid.NewGuid() };
-        AvaxInfo = new AddressChainInfo { ChainId = 43114, Id = Guid.NewGuid() };
-        PolygonInfo = new AddressChainInfo { ChainId = 137, Id = Guid.NewGuid() };
-        ArbitrumInfo = new AddressChainInfo { ChainId = 42161, Id = Guid.NewGuid() };
-        OptimismInfo = new AddressChainInfo { ChainId = 10, Id = Guid.NewGuid() };
+        FantomInfo = new AddressChainInfo { ChainId = (int)Chain.Fantom, Id = Guid.NewGuid() };
+        AvaxInfo = new AddressChainInfo { ChainId = (int)Chain.Avalanche, Id = Guid.NewGuid() };
+        PolygonInfo = new AddressChainInfo { ChainId = (int)Chain.Polygon, Id = Guid.NewGuid() };
+        ArbitrumInfo = new AddressChainInfo { ChainId = (int)Chain.Arbitrum, Id = Guid.NewGuid() };
+        OptimismInfo = new AddressChainInfo { ChainId = (int)Chain.Optimism, Id = Guid.NewGuid() };
     }
 
     public bool IsSelected

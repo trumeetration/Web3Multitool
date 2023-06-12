@@ -161,7 +161,7 @@
                                         Height="25"
                                         Width="40"
                                         ToolTip="Deposit from CEX"
-                                        Command="{Binding ElementName=ViewTabView, Path=DataContext.EditCexAddressCommand}"
+                                        Command="{Binding ElementName=ViewTabView, Path=DataContext.DepositToAddressDialog}"
                                         Margin="5,0,0,0"
                                         Padding="0" />
                                     <Button
@@ -169,7 +169,7 @@
                                         Height="25"
                                         Width="40"
                                         ToolTip="Withdraw to CEX"
-                                        Command="{Binding ElementName=ViewTabView, Path=DataContext.EditCexAddressCommand}"
+                                        Command="{Binding ElementName=ViewTabView, Path=DataContext.WithdrawToCexCommand}"
                                         Margin="5,0,0,0"
                                         Padding="0" />
                                 </StackPanel>

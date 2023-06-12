@@ -28,6 +28,8 @@ public class ViewTabViewModel : BaseViewModel
     public ICommand ExportAccountsToFileCommand { get; }
     public ICommand ClearAccountInfosCommand { get; }
     public ICommand EditCexAddressCommand { get; }
+    public ICommand WithdrawToCexCommand { get; }
+    public ICommand DepositToAddressDialog { get; }
     public ICommand GenerateAccountsCommand { get; }
     public ICommand LoadAccountInfosCommand { get; }
 
@@ -51,8 +53,10 @@ public class ViewTabViewModel : BaseViewModel
         ExportAccountsToFileCommand = new ExportAccountsToFileCommand(this, _accountInfosStore);
         ClearAccountInfosCommand = new ClearAccountInfosCommand(this, _accountInfosStore);
         EditCexAddressCommand = new EditCexAddressCommand(this, _accountInfosStore);
+        WithdrawToCexCommand = new WithdrawFromAddressCommand(this, _accountInfosStore);
+        DepositToAddressDialog = new DepositToAddressCommand(this, _accountInfosStore);
         GenerateAccountsCommand = new GenerateAccountsCommand(this, _accountInfosStore);
-        SyncAccountsDataCommand = new SyncAccountsDataCommand(this, accountInfosStore);
+        SyncAccountsDataCommand = new SyncAccountsDataCommand(this, _accountInfosStore);
     }
 
     protected override void Dispose()

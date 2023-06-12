@@ -31,7 +31,7 @@
             <Run Text="Balance: " />
             <Run Text="{Binding AvailableAmount}"/>
         </TextBlock>
-        <TextBox Text="{Binding WithdrawAmount}"
+        <TextBox Text="{Binding WithdrawAmount, UpdateSourceTrigger=PropertyChanged}"
                  Width="100"
                  HorizontalAlignment="Left"
                  Margin="0,10"
