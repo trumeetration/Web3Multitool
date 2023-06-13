@@ -16,6 +16,9 @@ public class AccountInfo : INotifyPropertyChanged
     private AddressChainInfo _polygonInfo;
     private AddressChainInfo _arbitrumInfo;
     private AddressChainInfo _optimismInfo;
+    private AddressChainInfo _bnbInfo;
+    private AddressChainInfo _harmonyInfo;
+    private AddressChainInfo _coredaoInfo;
     private double _totalBalanceUsd;
     private bool _isSelected;
 
@@ -26,6 +29,9 @@ public class AccountInfo : INotifyPropertyChanged
         PolygonInfo = new AddressChainInfo { ChainId = (int)Chain.Polygon, Id = Guid.NewGuid() };
         ArbitrumInfo = new AddressChainInfo { ChainId = (int)Chain.Arbitrum, Id = Guid.NewGuid() };
         OptimismInfo = new AddressChainInfo { ChainId = (int)Chain.Optimism, Id = Guid.NewGuid() };
+        BnbInfo = new AddressChainInfo { ChainId = (int)Chain.Binance, Id = Guid.NewGuid() };
+        HarmonyInfo = new AddressChainInfo { ChainId = (int)Chain.Harmony, Id = Guid.NewGuid() };
+        CoredaoInfo = new AddressChainInfo { ChainId = (int)Chain.Coredao, Id = Guid.NewGuid() };
     }
 
     public bool IsSelected
@@ -86,6 +92,24 @@ public class AccountInfo : INotifyPropertyChanged
     {
         get => _optimismInfo;
         set => SetField(ref _optimismInfo, value);
+    }
+    
+    public AddressChainInfo BnbInfo
+    {
+        get => _bnbInfo;
+        set => SetField(ref _bnbInfo, value);
+    }
+    
+    public AddressChainInfo HarmonyInfo
+    {
+        get => _harmonyInfo;
+        set => SetField(ref _harmonyInfo, value);
+    }
+    
+    public AddressChainInfo CoredaoInfo
+    {
+        get => _coredaoInfo;
+        set => SetField(ref _coredaoInfo, value);
     }
 
     public double TotalBalanceUsd

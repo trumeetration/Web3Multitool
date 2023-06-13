@@ -1,30 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
-using MaterialDesignThemes.Wpf;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Win32;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
-using Nethereum.Util;
 using Newtonsoft.Json.Linq;
 using Web3Multitool.Commands;
-using Web3Multitool.Dialogs;
 using Web3Multitool.Models;
-using Web3Multitool.Stores;
 using Web3Multitool.Utils;
 using Chain = Web3Multitool.Utils.Chain;
 
@@ -60,7 +48,7 @@ public class MainViewModel : BaseViewModel
             {
                 var response =
                     await client.GetAsync(
-                        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,avalanche-2,fantom,matic-network&vs_currencies=usd&precision=2").ConfigureAwait(false);
+                        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,avalanche-2,fantom,matic-network,harmony,coredaoorg&vs_currencies=usd&precision=2").ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync();
@@ -73,6 +61,8 @@ public class MainViewModel : BaseViewModel
                     EthPrice = (double)data["ethereum"]["usd"];
                     FtmPrice = (double)data["fantom"]["usd"];
                     MaticPrice = (double)data["matic-network"]["usd"];
+                    HarmonyPrice = (double)data["harmony"]["usd"];
+                    CoredaoPrice = (double)data["coredaoorg"]["usd"];
                 }
             }
         }
@@ -145,6 +135,30 @@ public class MainViewModel : BaseViewModel
         get => _optimismRPC;
         set => SetField(ref _optimismRPC, value);
     }
+    
+    private string _bscRPC;
+
+    public string BscRPC
+    {
+        get => _bscRPC;
+        set => SetField(ref _bscRPC, value);
+    }
+    
+    private string _harmonyRPC;
+
+    public string HarmonyRPC
+    {
+        get => _harmonyRPC;
+        set => SetField(ref _harmonyRPC, value);
+    }
+    
+    private string _coredaomRPC;
+
+    public string CoredaoRPC
+    {
+        get => _coredaomRPC;
+        set => SetField(ref _coredaomRPC, value);
+    }
 
     private double _ethPrice;
 
@@ -185,6 +199,23 @@ public class MainViewModel : BaseViewModel
         get => _avaxPrice;
         set => SetField(ref _avaxPrice, value);
     }
+    
+    private double _harmonyPrice;
+
+    public double HarmonyPrice
+    {
+        get => _harmonyPrice;
+        set => SetField(ref _harmonyPrice, value);
+    }
+    
+    private double _coredaoPrice;
+
+    public double CoredaoPrice
+    {
+        get => _coredaoPrice;
+        set => SetField(ref _coredaoPrice, value);
+    }
+    
 
     public ICommand SaveConfigData
     {
@@ -198,8 +229,12 @@ public class MainViewModel : BaseViewModel
                 ArbitrumRPC = ArbitrumRPC,
                 FantomRPC = FantomRPC,
                 AVAXRPC = AVAXRPC,
+                BscRPC = BscRPC,
+                HarmonyRPC = HarmonyRPC,
+                CoredaoRPC = CoredaoRPC,
                 PolygonRPC = PolygonRPC,
-                OptimismRPC = OptimismRPC
+                OptimismRPC = OptimismRPC,
+
             };
 
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -232,6 +267,9 @@ public class MainViewModel : BaseViewModel
         AVAXRPC = configInfo.AVAXRPC;
         PolygonRPC = configInfo.PolygonRPC;
         OptimismRPC = configInfo.OptimismRPC;
+        BscRPC = configInfo.BscRPC;
+        HarmonyRPC = configInfo.HarmonyRPC;
+        CoredaoRPC = configInfo.CoredaoRPC;
     }
 
     private void ConnectToRpcList()
@@ -247,6 +285,12 @@ public class MainViewModel : BaseViewModel
             dict.Add(Chain.Optimism, OptimismRPC);
         if (Uri.IsWellFormedUriString(AVAXRPC, UriKind.RelativeOrAbsolute))
             dict.Add(Chain.Avalanche, AVAXRPC);
+        if (Uri.IsWellFormedUriString(BscRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(Chain.Binance, BscRPC);
+        if (Uri.IsWellFormedUriString(HarmonyRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(Chain.Harmony, HarmonyRPC);
+        if (Uri.IsWellFormedUriString(CoredaoRPC, UriKind.RelativeOrAbsolute))
+            dict.Add(Chain.Coredao, CoredaoRPC);
 
         if (dict.Any())
             Web3Utils = new Web3Utils(dict);

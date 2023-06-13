@@ -10,4 +10,7 @@ public class AppConfig
     public string OptimismRPC { get; set; }
     public string FantomRPC { get; set; }
     public string AVAXRPC { get; set; }
+    public string BscRPC { get; set; }
+    public string HarmonyRPC { get; set; }
+    public string CoredaoRPC { get; set; }
 }

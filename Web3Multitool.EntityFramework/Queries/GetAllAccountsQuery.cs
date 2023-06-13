@@ -22,6 +22,9 @@ public class GetAllAccountsQuery : IGetAllAccountsQuery
             .Include(x => x.FantomInfo)
             .Include(x => x.OptimismInfo)
             .Include(x => x.PolygonInfo)
+            .Include(x => x.BnbInfo)
+            .Include(x => x.HarmonyInfo)
+            .Include(x => x.CoredaoInfo)
             .ToListAsync();
         return accountInfos.Select(info => info.FromDto());
     }

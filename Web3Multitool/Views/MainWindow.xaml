@@ -63,103 +63,135 @@
                                     Text="Settings" />
                             </StackPanel>
                         </TabItem.Header>
-                        <StackPanel
-                            Margin="16">
-                            <TextBlock
-                                Margin="0,0,0,8"
-                                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                                Text="Settings" />
-                            <TextBox
-                                Text="{Binding BinanceAPI, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="Binance API key"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <TextBox
-                                Text="{Binding BybitAPI, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="Bybit API key"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <TextBox
-                                Text="{Binding OKXAPI, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="OKX API key"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <Separator
-                                Margin="0,0,0,10">
-                            </Separator>
-                            <TextBox
-                                Text="{Binding ArbitrumRPC, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="Arbitrum RPC Url"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <TextBox
-                                Text="{Binding FantomRPC, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="Fantom RPC Url"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <TextBox
-                                Text="{Binding AVAXRPC, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="AVAX RPC Url"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <TextBox
-                                Text="{Binding PolygonRPC, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="Polygon RPC Url"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
-                            <TextBox
-                                Text="{Binding OptimismRPC, Mode=TwoWay}"
-                                Width="300"
-                                Margin="0,0,0,10"
-                                VerticalAlignment="Top"
-                                materialDesign:HintAssist.Hint="Optimism RPC Url"
-                                AcceptsReturn="True"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource MaterialDesignFilledTextBox}"
-                                TextWrapping="Wrap" />
+                        <ScrollViewer>
+                            <StackPanel
+                                Margin="16">
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                    Text="Settings" />
+                                <TextBox
+                                    Text="{Binding BinanceAPI, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Binance API key"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding BybitAPI, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Bybit API key"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding OKXAPI, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="OKX API key"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <Separator
+                                    Margin="0,0,0,10">
+                                </Separator>
+                                <TextBox
+                                    Text="{Binding ArbitrumRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Arbitrum RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding FantomRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Fantom RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding AVAXRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="AVAX RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding PolygonRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Polygon RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding OptimismRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Optimism RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding BscRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="BSC RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding HarmonyRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="Harmony RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
+                                <TextBox
+                                    Text="{Binding CoredaoRPC, Mode=TwoWay}"
+                                    Width="300"
+                                    Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    materialDesign:HintAssist.Hint="CoreDAO RPC Url"
+                                    AcceptsReturn="True"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    TextWrapping="Wrap" />
 
-                            <Button
-                                Command="{Binding SaveConfigData}"
-                                HorizontalAlignment="Right"
-                                Width="100"
-                                Content="Save"
-                                Margin="0,100,0,0" />
-                        </StackPanel>
+                                <Button
+                                    Command="{Binding SaveConfigData}"
+                                    HorizontalAlignment="Right"
+                                    Width="100"
+                                    Content="Save"
+                                    Margin="0,100,0,0" />
+                            </StackPanel>
+                        </ScrollViewer>
                     </TabItem>
                 </TabControl>
             </materialDesign:Card>
@@ -173,24 +205,24 @@
                     Padding="5">
                     <StackPanel>
                         <TextBlock>
-                            <Run Text="ETH - "/>
-                            <Run Text="{Binding EthPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                            <Run Text="ETH - " />
+                            <Run Text="{Binding EthPrice, Converter={StaticResource CurrencyRateConverter}}" />
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="BNB - "/>
-                            <Run Text="{Binding BnbPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                            <Run Text="BNB - " />
+                            <Run Text="{Binding BnbPrice, Converter={StaticResource CurrencyRateConverter}}" />
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="MATIC - "/>
-                            <Run Text="{Binding MaticPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                            <Run Text="MATIC - " />
+                            <Run Text="{Binding MaticPrice, Converter={StaticResource CurrencyRateConverter}}" />
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="AVAX - "/>
-                            <Run Text="{Binding AvaxPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                            <Run Text="AVAX - " />
+                            <Run Text="{Binding AvaxPrice, Converter={StaticResource CurrencyRateConverter}}" />
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="FTM - "/>
-                            <Run Text="{Binding FtmPrice, Converter={StaticResource CurrencyRateConverter}}"/>
+                            <Run Text="FTM - " />
+                            <Run Text="{Binding FtmPrice, Converter={StaticResource CurrencyRateConverter}}" />
                         </TextBlock>
                     </StackPanel>
                 </GroupBox>

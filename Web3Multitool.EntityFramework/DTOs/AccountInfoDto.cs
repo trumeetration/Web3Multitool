@@ -16,6 +16,9 @@ public class AccountInfoDto
     public AddressChainInfoDto PolygonInfo { get; set; }
     public AddressChainInfoDto ArbitrumInfo { get; set; }
     public AddressChainInfoDto OptimismInfo { get; set; }
+    public AddressChainInfoDto BnbInfo { get; set; }
+    public AddressChainInfoDto HarmonyInfo { get; set; }
+    public AddressChainInfoDto CoredaoInfo { get; set; }
     public double TotalBalanceUsd { get; set; }
     public int TotalTxAmount { get; set; }
 }

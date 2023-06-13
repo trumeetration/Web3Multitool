@@ -8,5 +8,7 @@ public enum Chain
     Ethereum = 1,
     Optimism = 10,
     Avalanche = 43114,
-    Binance = 56
+    Binance = 56,
+    Harmony = 1666600000,
+    Coredao = 1116
 }

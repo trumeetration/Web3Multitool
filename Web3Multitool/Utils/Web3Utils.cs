@@ -47,6 +47,27 @@ public class Web3Utils
                 { "USDT", new() { ContractAddress = "0xc2132d05d31c914a87c6611c10748aeb04b58e8f", ABI = _baseABI } },
                 { "USDC", new() { ContractAddress = "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", ABI = _baseABI } }
             }
+        },
+        {
+            Chain.Binance, new()
+            {
+                { "USDT", new() { ContractAddress = "0x55d398326f99059ff775485246999027b3197955", ABI = _baseABI } },
+                { "USDC", new() { ContractAddress = "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", ABI = _baseABI } }
+            }
+        },
+        {
+            Chain.Harmony, new()
+            {
+                { "USDT", new() { ContractAddress = "0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f", ABI = _baseABI } },
+                { "USDC", new() { ContractAddress = "0x985458e523db3d53125813ed68c274899e9dfab4", ABI = _baseABI } }
+            }
+        },
+        {
+            Chain.Coredao, new()
+            {
+                { "USDT", new() { ContractAddress = "0x900101d06A7426441Ae63e9AB3B9b0F63Be145F1", ABI = _baseABI } },
+                { "USDC", new() { ContractAddress = "0xeab3ac417c4d6df6b143346a46fee1b847b50296", ABI = _baseABI } }
+            }
         }
     };
     public Dictionary<Chain, ChainInfo> ChainInfosDictionary { get; set; } = new();

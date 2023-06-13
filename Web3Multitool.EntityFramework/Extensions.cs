@@ -15,6 +15,7 @@ public static class Extensions
             NativeBalance = addressChainInfoDto.NativeBalance,
             FirstTxDate = addressChainInfoDto.FirstTxDate,
             UsdcBalance = addressChainInfoDto.UsdcBalance,
+            UsdtBalance = addressChainInfoDto.UsdtBalance,
         };
     }
 
@@ -31,6 +32,9 @@ public static class Extensions
             PolygonInfo = accountInfoDto.PolygonInfo.FromDto(),
             ArbitrumInfo = accountInfoDto.ArbitrumInfo.FromDto(),
             OptimismInfo = accountInfoDto.OptimismInfo.FromDto(),
+            BnbInfo = accountInfoDto.BnbInfo.FromDto(),
+            HarmonyInfo = accountInfoDto.HarmonyInfo.FromDto(),
+            CoredaoInfo = accountInfoDto.CoredaoInfo.FromDto(),
             TotalBalanceUsd = accountInfoDto.TotalBalanceUsd,
             TotalTxAmount = accountInfoDto.TotalTxAmount
         };
@@ -49,6 +53,9 @@ public static class Extensions
             PolygonInfo = accountInfo.PolygonInfo.AsDto(),
             ArbitrumInfo = accountInfo.ArbitrumInfo.AsDto(),
             OptimismInfo = accountInfo.OptimismInfo.AsDto(),
+            BnbInfo = accountInfo.BnbInfo.AsDto(),
+            HarmonyInfo = accountInfo.HarmonyInfo.AsDto(),
+            CoredaoInfo = accountInfo.CoredaoInfo.AsDto(),
             TotalBalanceUsd = accountInfo.TotalBalanceUsd,
             TotalTxAmount = accountInfo.TotalTxAmount
         };
