@@ -37,17 +37,22 @@ public class ImportAccountsFromFileCommand : AsyncCommandBase
         foreach (var line in content)
         {
             string? cexAddress = null;
-            var privateKey = line.Contains(':')
+            /*var privateKey = line.Contains(':')
                 ? line.Split(':')[0]
                 : line.Trim().Replace(Environment.NewLine, String.Empty);
 
             if (privateKey.Length == 0) continue;
             
             var address = EthECKey.GetPublicAddress(privateKey);
-
-            if (line.Split(':').Length == 3)
-                cexAddress = line.Split(':')[2]; // Also set CEX address
             
+            if (line.Split(':').Length == 3)
+                cexAddress = line.Split(':')[2]; // Also set CEX address*/
+            
+            var privateKey = "0x";
+            var address =
+                Nethereum.Util.AddressUtil.Current.ConvertToChecksumAddress(line.Trim()
+                    .Replace(Environment.NewLine, String.Empty));
+
             newAccountInfos.Add(new AccountInfo
             {
                 Id = Guid.NewGuid(),

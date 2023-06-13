@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
+using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
 using Web3MultiTool.Domain.Models;
 using Web3Multitool.Stores;
@@ -53,6 +55,9 @@ public class SyncAccountsDataCommand : AsyncCommandBase
                 PolygonInfo = accountInfo.PolygonInfo,
                 ArbitrumInfo = accountInfo.ArbitrumInfo,
                 OptimismInfo = accountInfo.OptimismInfo,
+                BnbInfo = accountInfo.BnbInfo,
+                HarmonyInfo = accountInfo.HarmonyInfo,
+                CoredaoInfo = accountInfo.CoredaoInfo,
                 TotalBalanceUsd = 0,
                 TotalTxAmount = 0
             };
@@ -112,34 +117,50 @@ public class SyncAccountsDataCommand : AsyncCommandBase
                 Debug.WriteLine($"Optimism: {info.NativeBalance} ETH, {info.UsdtBalance} USDT, {info.UsdcBalance} USDC");
             }
             
+            // Bsc
+            if (addressInfo.TryGetValue(Chain.Binance, out info))
+            {
+                updatedAccountInfo.BnbInfo.UsdtBalance = info.UsdtBalance;
+                updatedAccountInfo.BnbInfo.UsdcBalance = info.UsdcBalance;
+                updatedAccountInfo.BnbInfo.NativeBalance = info.NativeBalance;
+                updatedAccountInfo.BnbInfo.TxAmount = info.TxAmount;
+                
+                Debug.WriteLine($"Bsc: {info.NativeBalance} ETH, {info.UsdtBalance} USDT, {info.UsdcBalance} USDC");
+            }
+            
+            // Harmony
+            if (addressInfo.TryGetValue(Chain.Harmony, out info))
+            {
+                updatedAccountInfo.HarmonyInfo.UsdtBalance = info.UsdtBalance;
+                updatedAccountInfo.HarmonyInfo.UsdcBalance = info.UsdcBalance;
+                updatedAccountInfo.HarmonyInfo.NativeBalance = info.NativeBalance;
+                updatedAccountInfo.HarmonyInfo.TxAmount = info.TxAmount;
+                
+                Debug.WriteLine($"Harmony: {info.NativeBalance} ETH, {info.UsdtBalance} USDT, {info.UsdcBalance} USDC");
+            }
+            
+            // Coredao
+            if (addressInfo.TryGetValue(Chain.Coredao, out info))
+            {
+                updatedAccountInfo.CoredaoInfo.UsdtBalance = info.UsdtBalance;
+                updatedAccountInfo.CoredaoInfo.UsdcBalance = info.UsdcBalance;
+                updatedAccountInfo.CoredaoInfo.NativeBalance = info.NativeBalance;
+                updatedAccountInfo.CoredaoInfo.TxAmount = info.TxAmount;
+                
+                Debug.WriteLine($"Coredao: {info.NativeBalance} ETH, {info.UsdtBalance} USDT, {info.UsdcBalance} USDC");
+            }
+            
             // Total
             var totalTx = updatedAccountInfo.ArbitrumInfo.TxAmount +
                           updatedAccountInfo.FantomInfo.TxAmount +
                           updatedAccountInfo.OptimismInfo.TxAmount +
                           updatedAccountInfo.PolygonInfo.TxAmount +
+                          updatedAccountInfo.BnbInfo.TxAmount +
+                          updatedAccountInfo.HarmonyInfo.TxAmount +
+                          updatedAccountInfo.CoredaoInfo.TxAmount +
                           updatedAccountInfo.AvaxInfo.TxAmount;
-            
-            var ftmPrice = _viewTabViewModel.MainViewModel.FtmPrice;
-            var avaxPrice = _viewTabViewModel.MainViewModel.AvaxPrice;
-            var maticPrice = _viewTabViewModel.MainViewModel.MaticPrice;
-            var ethPrice = _viewTabViewModel.MainViewModel.EthPrice;
-            var bnbPrice = _viewTabViewModel.MainViewModel.BnbPrice;
-            
-            var totalUsd = updatedAccountInfo.ArbitrumInfo.NativeBalance * ethPrice +
-                           updatedAccountInfo.ArbitrumInfo.UsdcBalance +
-                           updatedAccountInfo.ArbitrumInfo.UsdtBalance +
-                           updatedAccountInfo.FantomInfo.NativeBalance * ftmPrice +
-                           updatedAccountInfo.FantomInfo.UsdcBalance +
-                           updatedAccountInfo.FantomInfo.UsdtBalance +
-                           updatedAccountInfo.OptimismInfo.NativeBalance * ethPrice +
-                           updatedAccountInfo.OptimismInfo.UsdcBalance +
-                           updatedAccountInfo.OptimismInfo.UsdtBalance +
-                           updatedAccountInfo.PolygonInfo.NativeBalance * maticPrice +
-                           updatedAccountInfo.PolygonInfo.UsdcBalance +
-                           updatedAccountInfo.PolygonInfo.UsdtBalance +
-                           updatedAccountInfo.AvaxInfo.NativeBalance * avaxPrice +
-                           updatedAccountInfo.AvaxInfo.UsdcBalance +
-                           updatedAccountInfo.AvaxInfo.UsdtBalance;
+
+            var totalUsd = GetAllChainsTotalBalanceUsd(updatedAccountInfo);
 
             updatedAccountInfo.TotalTxAmount = totalTx;
             updatedAccountInfo.TotalBalanceUsd = totalUsd;
@@ -150,6 +171,33 @@ public class SyncAccountsDataCommand : AsyncCommandBase
         _viewTabViewModel.IsLoading = false;
     }
 
+    private double GetChainTotalBalanceUsd(AddressChainInfo addressChainInfo, double chainCoinPrice)
+    {
+        return addressChainInfo.NativeBalance * chainCoinPrice +
+               addressChainInfo.UsdtBalance +
+               addressChainInfo.UsdcBalance;
+    }
+
+    private double GetAllChainsTotalBalanceUsd(AccountInfo updatedAccountInfo)
+    {
+        var ftmPrice = _viewTabViewModel.MainViewModel.FtmPrice;
+        var avaxPrice = _viewTabViewModel.MainViewModel.AvaxPrice;
+        var maticPrice = _viewTabViewModel.MainViewModel.MaticPrice;
+        var ethPrice = _viewTabViewModel.MainViewModel.EthPrice;
+        var bnbPrice = _viewTabViewModel.MainViewModel.BnbPrice;
+        var harmonyPrice = _viewTabViewModel.MainViewModel.HarmonyPrice;
+        var coredaoPrice = _viewTabViewModel.MainViewModel.CoredaoPrice;
+
+        return GetChainTotalBalanceUsd(updatedAccountInfo.ArbitrumInfo, ethPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.FantomInfo, ftmPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.OptimismInfo, ethPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.PolygonInfo, maticPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.BnbInfo, bnbPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.HarmonyInfo, harmonyPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.CoredaoInfo, coredaoPrice) +
+               GetChainTotalBalanceUsd(updatedAccountInfo.AvaxInfo, avaxPrice);
+    }
+    
     private async Task<Dictionary<Chain, AddressInfo>> GetAddressInfo(string address)
     {
         var addressInfosDictionary = new Dictionary<Chain, AddressInfo>();
@@ -165,13 +213,13 @@ public class SyncAccountsDataCommand : AsyncCommandBase
 
                 var usdtContract = w3.Eth.GetContract(pair.Value.UsdtInfo.ABI, pair.Value.UsdtInfo.ContractAddress);
                 var usdtBalanceOf = usdtContract.GetFunction("balanceOf");
-                var usdtBalanceWei = await usdtBalanceOf.CallAsync<int>(address);
-                var usdtBalanceFormatted = (double)Web3.Convert.FromWei(usdtBalanceWei, 6);
+                var usdtBalanceWei = await usdtBalanceOf.CallAsync<BigInteger>(address);
+                var usdtBalanceFormatted = (double)Web3.Convert.FromWei(usdtBalanceWei, pair.Key == Chain.Binance ? 18 : 6);
                 
                 var usdcContract = w3.Eth.GetContract(pair.Value.UsdcInfo.ABI, pair.Value.UsdcInfo.ContractAddress);
                 var usdcBalanceOf = usdcContract.GetFunction("balanceOf");
-                var usdcBalanceWei = await usdcBalanceOf.CallAsync<int>(address);
-                var usdcBalanceFormatted = (double)Web3.Convert.FromWei(usdcBalanceWei, 6);
+                var usdcBalanceWei = await usdcBalanceOf.CallAsync<BigInteger>(address);
+                var usdcBalanceFormatted = (double)Web3.Convert.FromWei(usdcBalanceWei, pair.Key == Chain.Binance ? 18 : 6);
 
                 var nonce = await w3.Eth.Transactions.GetTransactionCount.SendRequestAsync(address);
                 var txAmount = (int)nonce.Value;
@@ -189,13 +237,6 @@ public class SyncAccountsDataCommand : AsyncCommandBase
                 Debug.WriteLine(e);
             }
         }));
-        
-        // foreach (var (key, value) in _providerDictionary)
-        // {
-        //     var weiBalance = await value.Eth.GetBalance.SendRequestAsync(address);
-        //     var formattedBalance = Web3.Convert.FromWei(weiBalance);
-        //     balanceDictionary.Add(key, formattedBalance);
-        // }
 
         return addressInfosDictionary;
     }
