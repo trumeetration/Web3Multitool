@@ -26,6 +26,8 @@ public class MainViewModel : BaseViewModel
     
     public ViewTabViewModel ViewTabViewModel { get; }
     public Web3Utils Web3Utils;
+
+    private string _log;
     
     private string _binanceAPI;
     private OkxApiInfo _okxApiInfo;
@@ -53,9 +55,11 @@ public class MainViewModel : BaseViewModel
         ViewTabViewModel = viewTabViewModel;
         ViewTabViewModel.MainViewModel = this;
 
-        OKXApiInfo = new OkxApiInfo();
-        
         LoadConfigInfo();
+
+        if (OKXApiInfo == null)
+            OKXApiInfo = new OkxApiInfo();
+
         ConnectToRpcList();
 
         _timer = new Timer(60000);
@@ -63,6 +67,12 @@ public class MainViewModel : BaseViewModel
         _timer.Start();
 
         GetCurrenciesRate().Wait();
+    }
+
+    public string Log
+    {
+        get => _log;
+        set => SetField(ref _log, value);
     }
 
     public string BinanceAPI
@@ -172,9 +182,19 @@ public class MainViewModel : BaseViewModel
         get => _coredaoPrice;
         set => SetField(ref _coredaoPrice, value);
     }
+
+    public void AppendToLog(string message)
+    {
+        var dateTime = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        Log += $"{dateTime} | {message}{Environment.NewLine}";
+        
+        
+    }
     
     private async Task GetCurrenciesRate()
     {
+        AppendToLog("Updating currencies rates...");
+        
         try
         {
             using (var client = new HttpClient())
@@ -197,11 +217,14 @@ public class MainViewModel : BaseViewModel
                     HarmonyPrice = (double)data["harmony"]["usd"];
                     CoredaoPrice = (double)data["coredaoorg"]["usd"];
                 }
+                
+                AppendToLog("Currencies rates were updated");
             }
         }
         catch (Exception exception)
         {
             Debug.WriteLine(exception);
+            AppendToLog("Error with currencies rates updating!");
         }
     }
     
@@ -251,10 +274,14 @@ public class MainViewModel : BaseViewModel
         BscRPC = configInfo.BscRPC;
         HarmonyRPC = configInfo.HarmonyRPC;
         CoredaoRPC = configInfo.CoredaoRPC;
+        
+        AppendToLog("Config info loaded");
     }
 
     private void ConnectToRpcList()
     {
+        AppendToLog("Connecting to RPCs");
+        
         var dict = new Dictionary<Chain, string>();
         if (Uri.IsWellFormedUriString(ArbitrumRPC, UriKind.RelativeOrAbsolute))
             dict.Add(Chain.Arbitrum, ArbitrumRPC);
@@ -275,6 +302,8 @@ public class MainViewModel : BaseViewModel
 
         if (dict.Any())
             Web3Utils = new Web3Utils(dict);
+        
+        AppendToLog($"Working RPCs amount: {dict.Count}");
     }
 
     public class OkxApiInfo : INotifyPropertyChanged

@@ -12,13 +12,14 @@
         Title="MainWindow"
         MinWidth="1100"
         MaxWidth="1100"
-        MinHeight="700"
-        MaxHeight="700">
+        MinHeight="900"
+        MaxHeight="900">
     <Window.Resources>
         <converters:DoubleValuesConverter x:Key="CurrencyRateConverter"></converters:DoubleValuesConverter>
     </Window.Resources>
-    <materialDesign:DialogHost Identifier="RootDialog">
-        <Grid>
+    <StackPanel>
+        <materialDesign:DialogHost Identifier="RootDialog">
+        <Grid Height="700">
             <materialDesign:Card>
                 <TabControl
                     materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
@@ -97,7 +98,7 @@
                                         Width="200"
                                         Margin="0,0,10,10"
                                         VerticalAlignment="Top"
-                                        materialDesign:HintAssist.Hint="OKX Secret key"
+                                        materialDesign:HintAssist.Hint="OKX API key"
                                         HorizontalAlignment="Left"
                                         Style="{StaticResource MaterialDesignFilledRevealPasswordBox}"/>
                                     <PasswordBox
@@ -105,7 +106,7 @@
                                         Width="200"
                                         Margin="0,0,10,10"
                                         VerticalAlignment="Top"
-                                        materialDesign:HintAssist.Hint="OKX Passphrase"
+                                        materialDesign:HintAssist.Hint="OKX Secret key"
                                         HorizontalAlignment="Left"
                                         Style="{StaticResource MaterialDesignFilledRevealPasswordBox}"/>
                                     <PasswordBox
@@ -113,7 +114,7 @@
                                         Width="200"
                                         Margin="0,0,10,10"
                                         VerticalAlignment="Top"
-                                        materialDesign:HintAssist.Hint="OKX API key"
+                                        materialDesign:HintAssist.Hint="OKX Passphrase"
                                         HorizontalAlignment="Left"
                                         Style="{StaticResource MaterialDesignFilledRevealPasswordBox}"/>
                                 </StackPanel>
@@ -246,4 +247,16 @@
             </StackPanel>
         </Grid>
     </materialDesign:DialogHost>
+        <TextBox
+            Padding="10"
+            Text="{Binding Log}"
+            Height="160"
+            MaxHeight="160"
+            VerticalAlignment="Top"
+            TextWrapping="Wrap"
+            IsReadOnly="True"
+            FontSize="14"
+            VerticalContentAlignment="Top"
+            VerticalScrollBarVisibility="Auto" />
+    </StackPanel>
 </Window>
