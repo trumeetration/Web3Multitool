@@ -90,16 +90,33 @@
                                     HorizontalAlignment="Left"
                                     Style="{StaticResource MaterialDesignFilledTextBox}"
                                     TextWrapping="Wrap" />
-                                <TextBox
-                                    Text="{Binding OKXAPI, Mode=TwoWay}"
-                                    Width="300"
-                                    Margin="0,0,0,10"
-                                    VerticalAlignment="Top"
-                                    materialDesign:HintAssist.Hint="OKX API key"
-                                    AcceptsReturn="True"
-                                    HorizontalAlignment="Left"
-                                    Style="{StaticResource MaterialDesignFilledTextBox}"
-                                    TextWrapping="Wrap" />
+                                <StackPanel
+                                    Orientation="Horizontal">
+                                    <PasswordBox
+                                        materialDesign:PasswordBoxAssist.Password="{Binding OKXApiInfo.ApiKey, Mode=TwoWay}"
+                                        Width="200"
+                                        Margin="0,0,10,10"
+                                        VerticalAlignment="Top"
+                                        materialDesign:HintAssist.Hint="OKX Secret key"
+                                        HorizontalAlignment="Left"
+                                        Style="{StaticResource MaterialDesignFilledRevealPasswordBox}"/>
+                                    <PasswordBox
+                                        materialDesign:PasswordBoxAssist.Password="{Binding OKXApiInfo.SecretKey, Mode=TwoWay}"
+                                        Width="200"
+                                        Margin="0,0,10,10"
+                                        VerticalAlignment="Top"
+                                        materialDesign:HintAssist.Hint="OKX Passphrase"
+                                        HorizontalAlignment="Left"
+                                        Style="{StaticResource MaterialDesignFilledRevealPasswordBox}"/>
+                                    <PasswordBox
+                                        materialDesign:PasswordBoxAssist.Password="{Binding OKXApiInfo.PassPhrase, Mode=TwoWay}"
+                                        Width="200"
+                                        Margin="0,0,10,10"
+                                        VerticalAlignment="Top"
+                                        materialDesign:HintAssist.Hint="OKX API key"
+                                        HorizontalAlignment="Left"
+                                        Style="{StaticResource MaterialDesignFilledRevealPasswordBox}"/>
+                                </StackPanel>
                                 <Separator
                                     Margin="0,0,0,10">
                                 </Separator>

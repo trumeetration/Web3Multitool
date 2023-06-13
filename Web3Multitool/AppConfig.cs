@@ -1,10 +1,12 @@
+using Web3Multitool.ViewModels;
+
 namespace Web3Multitool.Models;
 
 public class AppConfig
 {
     public string BinanceAPIKey { get; set; }
     public string BybitAPIKey { get; set; }
-    public string OKXAPIKey { get; set; }
+    public MainViewModel.OkxApiInfo OKXApiInfo { get; set; }
     public string ArbitrumRPC { get; set; }
     public string PolygonRPC { get; set; }
     public string OptimismRPC { get; set; }

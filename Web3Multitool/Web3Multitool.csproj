@@ -17,6 +17,7 @@
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0-preview.4.23259.5" />
       <PackageReference Include="Nethereum.Web3" Version="4.14.0" />
+      <PackageReference Include="OKX.Api" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
@@ -25,11 +27,34 @@ public class MainViewModel : BaseViewModel
     public ViewTabViewModel ViewTabViewModel { get; }
     public Web3Utils Web3Utils;
     
+    private string _binanceAPI;
+    private OkxApiInfo _okxApiInfo;
+    private string _bybitAPI;
+    
+    private string _arbitrumRPC;
+    private string _fantomRPC;
+    private string _avaxRPC;
+    private string _polygonRPC;
+    private string _optimismRPC;
+    private string _bscRPC;
+    private string _harmonyRPC;
+    private string _coredaomRPC;
+    
+    private double _ethPrice;
+    private double _ftmPrice;
+    private double _maticPrice;
+    private double _bnbPrice;
+    private double _avaxPrice;
+    private double _harmonyPrice;
+    private double _coredaoPrice;
+
     public MainViewModel(ViewTabViewModel viewTabViewModel)
     {
         ViewTabViewModel = viewTabViewModel;
         ViewTabViewModel.MainViewModel = this;
 
+        OKXApiInfo = new OkxApiInfo();
+        
         LoadConfigInfo();
         ConnectToRpcList();
 
@@ -40,6 +65,114 @@ public class MainViewModel : BaseViewModel
         GetCurrenciesRate().Wait();
     }
 
+    public string BinanceAPI
+    {
+        get => _binanceAPI;
+        set => SetField(ref _binanceAPI, value);
+    }
+    
+    public string BybitAPI
+    {
+        get => _bybitAPI;
+        set => SetField(ref _bybitAPI, value);
+    }
+
+    public OkxApiInfo OKXApiInfo
+    {
+        get => _okxApiInfo;
+        set => SetField(ref _okxApiInfo, value);
+    }
+
+    public string ArbitrumRPC
+    {
+        get => _arbitrumRPC;
+        set => SetField(ref _arbitrumRPC, value);
+    }
+
+    public string FantomRPC
+    {
+        get => _fantomRPC;
+        set => SetField(ref _fantomRPC, value);
+    }
+
+    public string AVAXRPC
+    {
+        get => _avaxRPC;
+        set => SetField(ref _avaxRPC, value);
+    }
+    
+    public string PolygonRPC
+    {
+        get => _polygonRPC;
+        set => SetField(ref _polygonRPC, value);
+    }
+
+    public string OptimismRPC
+    {
+        get => _optimismRPC;
+        set => SetField(ref _optimismRPC, value);
+    }
+
+    public string BscRPC
+    {
+        get => _bscRPC;
+        set => SetField(ref _bscRPC, value);
+    }
+
+    public string HarmonyRPC
+    {
+        get => _harmonyRPC;
+        set => SetField(ref _harmonyRPC, value);
+    }
+
+    public string CoredaoRPC
+    {
+        get => _coredaomRPC;
+        set => SetField(ref _coredaomRPC, value);
+    }
+    
+    public double EthPrice
+    {
+        get => _ethPrice;
+        set => SetField(ref _ethPrice, value);
+    }
+
+    public double FtmPrice
+    {
+        get => _ftmPrice;
+        set => SetField(ref _ftmPrice, value);
+    }
+    
+    public double MaticPrice
+    {
+        get => _maticPrice;
+        set => SetField(ref _maticPrice, value);
+    }
+
+    public double BnbPrice
+    {
+        get => _bnbPrice;
+        set => SetField(ref _bnbPrice, value);
+    }
+    
+    public double AvaxPrice
+    {
+        get => _avaxPrice;
+        set => SetField(ref _avaxPrice, value);
+    }
+
+    public double HarmonyPrice
+    {
+        get => _harmonyPrice;
+        set => SetField(ref _harmonyPrice, value);
+    }
+    
+    public double CoredaoPrice
+    {
+        get => _coredaoPrice;
+        set => SetField(ref _coredaoPrice, value);
+    }
+    
     private async Task GetCurrenciesRate()
     {
         try
@@ -71,152 +204,7 @@ public class MainViewModel : BaseViewModel
             Debug.WriteLine(exception);
         }
     }
-
-    private string _binanceAPI;
-
-    public string BinanceAPI
-    {
-        get => _binanceAPI;
-        set => SetField(ref _binanceAPI, value);
-    }
-
-    private string _bybitAPI;
-
-    public string BybitAPI
-    {
-        get => _bybitAPI;
-        set => SetField(ref _bybitAPI, value);
-    }
-
-    private string _okxAPI;
-
-    public string OKXAPI
-    {
-        get => _okxAPI;
-        set => SetField(ref _okxAPI, value);
-    }
-
-    private string _arbitrumRPC;
-
-    public string ArbitrumRPC
-    {
-        get => _arbitrumRPC;
-        set => SetField(ref _arbitrumRPC, value);
-    }
-
-    private string _fantomRPC;
-
-    public string FantomRPC
-    {
-        get => _fantomRPC;
-        set => SetField(ref _fantomRPC, value);
-    }
-
-    private string _avaxRPC;
-
-    public string AVAXRPC
-    {
-        get => _avaxRPC;
-        set => SetField(ref _avaxRPC, value);
-    }
-
-    private string _polygonRPC;
-
-    public string PolygonRPC
-    {
-        get => _polygonRPC;
-        set => SetField(ref _polygonRPC, value);
-    }
-
-    private string _optimismRPC;
-
-    public string OptimismRPC
-    {
-        get => _optimismRPC;
-        set => SetField(ref _optimismRPC, value);
-    }
     
-    private string _bscRPC;
-
-    public string BscRPC
-    {
-        get => _bscRPC;
-        set => SetField(ref _bscRPC, value);
-    }
-    
-    private string _harmonyRPC;
-
-    public string HarmonyRPC
-    {
-        get => _harmonyRPC;
-        set => SetField(ref _harmonyRPC, value);
-    }
-    
-    private string _coredaomRPC;
-
-    public string CoredaoRPC
-    {
-        get => _coredaomRPC;
-        set => SetField(ref _coredaomRPC, value);
-    }
-
-    private double _ethPrice;
-
-    public double EthPrice
-    {
-        get => _ethPrice;
-        set => SetField(ref _ethPrice, value);
-    }
-
-    private double _ftmPrice;
-
-    public double FtmPrice
-    {
-        get => _ftmPrice;
-        set => SetField(ref _ftmPrice, value);
-    }
-
-    private double _maticPrice;
-
-    public double MaticPrice
-    {
-        get => _maticPrice;
-        set => SetField(ref _maticPrice, value);
-    }
-    
-    private double _bnbPrice;
-
-    public double BnbPrice
-    {
-        get => _bnbPrice;
-        set => SetField(ref _bnbPrice, value);
-    }
-    
-    private double _avaxPrice;
-
-    public double AvaxPrice
-    {
-        get => _avaxPrice;
-        set => SetField(ref _avaxPrice, value);
-    }
-    
-    private double _harmonyPrice;
-
-    public double HarmonyPrice
-    {
-        get => _harmonyPrice;
-        set => SetField(ref _harmonyPrice, value);
-    }
-    
-    private double _coredaoPrice;
-
-    public double CoredaoPrice
-    {
-        get => _coredaoPrice;
-        set => SetField(ref _coredaoPrice, value);
-    }
-    
-
     public ICommand SaveConfigData
     {
         get => new RelayCommand(() =>
@@ -225,7 +213,7 @@ public class MainViewModel : BaseViewModel
             {
                 BinanceAPIKey = BinanceAPI,
                 BybitAPIKey = BybitAPI,
-                OKXAPIKey = OKXAPI,
+                OKXApiInfo = OKXApiInfo,
                 ArbitrumRPC = ArbitrumRPC,
                 FantomRPC = FantomRPC,
                 AVAXRPC = AVAXRPC,
@@ -234,7 +222,6 @@ public class MainViewModel : BaseViewModel
                 CoredaoRPC = CoredaoRPC,
                 PolygonRPC = PolygonRPC,
                 OptimismRPC = OptimismRPC,
-
             };
 
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -246,22 +233,16 @@ public class MainViewModel : BaseViewModel
         }, () => true);
     }
 
-    private (string, string) GenerateAccount()
-    {
-        var privateKey = EthECKey.GenerateKey().GetPrivateKeyAsBytes().ToHex();
-        var address = EthECKey.GetPublicAddress(privateKey);
-
-        return (privateKey, address);
-    }
-
     private void LoadConfigInfo()
     {
         if (!File.Exists("config.json")) return;
         var configInfoString = File.ReadAllText("config.json");
         var configInfo = JsonSerializer.Deserialize<AppConfig>(configInfoString);
+        
         BinanceAPI = configInfo.BinanceAPIKey;
         BybitAPI = configInfo.BybitAPIKey;
-        OKXAPI = configInfo.OKXAPIKey;
+        OKXApiInfo = configInfo.OKXApiInfo;
+        
         ArbitrumRPC = configInfo.ArbitrumRPC;
         FantomRPC = configInfo.FantomRPC;
         AVAXRPC = configInfo.AVAXRPC;
@@ -294,5 +275,45 @@ public class MainViewModel : BaseViewModel
 
         if (dict.Any())
             Web3Utils = new Web3Utils(dict);
+    }
+
+    public class OkxApiInfo : INotifyPropertyChanged
+    {
+        private string _apiKey;
+        private string _secretKey;
+        private string _passPhrase;
+        
+        public string ApiKey
+        {
+            get => _apiKey;
+            set => SetField(ref _apiKey, value);
+        }
+
+        public string SecretKey
+        {
+            get => _secretKey;
+            set => SetField(ref _secretKey, value);
+        }
+
+        public string PassPhrase
+        {
+            get => _passPhrase;
+            set => SetField(ref _passPhrase, value);
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
     }
 }
