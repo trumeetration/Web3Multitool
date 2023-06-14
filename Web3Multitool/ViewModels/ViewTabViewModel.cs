@@ -44,6 +44,8 @@ public class ViewTabViewModel : BaseViewModel
     
     public ICommand CopyAddressesCommand { get; }
     
+    public ICommand EditManyCexAddressesCommand { get; }
+    
 
     public ViewTabViewModel(AccountInfosStore accountInfosStore)
     {
@@ -67,6 +69,7 @@ public class ViewTabViewModel : BaseViewModel
         GenerateAccountsCommand = new GenerateAccountsCommand(this, _accountInfosStore);
         SyncAccountsDataCommand = new SyncAccountsDataCommand(this, _accountInfosStore);
         CopyAddressesCommand = new CopyAddressesCommand(this, _accountInfosStore);
+        EditManyCexAddressesCommand = new EditManyCexAddressesCommand(this, _accountInfosStore);
     }
 
     protected override void Dispose()
@@ -179,6 +182,31 @@ public class ViewTabViewModel : BaseViewModel
     {
         get => _selectedAccountsAmount;
         set => SetField(ref _selectedAccountsAmount, value);
+    }
+    
+    public bool? IsAllAccountsSelected
+    {
+        get
+        {
+            var selected = AccountInfos.Select(acc => acc.IsSelected).Distinct().ToList();
+            return selected.Count == 1 ? selected.Single() : (bool?)null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                SelectAll(value.Value);
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public void SelectAll(bool select)
+    {
+        foreach (var accountInfo in AccountInfos)
+        {
+            accountInfo.IsSelected = select;
+        }
     }
 
     public bool CanGenerate => int.TryParse(GenerateInputAmount, out _);
