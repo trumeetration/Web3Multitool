@@ -115,6 +115,7 @@
                     Margin="10,0,0,0"
                     Width="32"
                     Height="32"
+                    Command="{Binding EditManyCexAddressesCommand}"
                     Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                     IsEnabled="{Binding AnyAccountExists}"
                     Style="{StaticResource MaterialDesignIconButton}"
@@ -171,6 +172,8 @@
             </StackPanel>
         </Grid>
         <Grid>
+            <FrameworkElement x:Name="DataContextProxy" DataContext="{Binding}" />
+
             <DataGrid
                 VerticalAlignment="Top"
                 MaxHeight="440"
@@ -192,7 +195,8 @@
                         <DataGridCheckBoxColumn.Header>
                             <Border
                                 Background="Transparent">
-                                <CheckBox />
+                                <CheckBox 
+                                    IsChecked="{Binding DataContext.IsAllAccountsSelected, Source={x:Reference DataContextProxy}}"/>
                             </Border>
                         </DataGridCheckBoxColumn.Header>
                         <DataGridCheckBoxColumn.HeaderStyle>
