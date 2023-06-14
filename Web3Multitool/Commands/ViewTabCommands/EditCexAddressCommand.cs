@@ -31,7 +31,7 @@ public class EditCexAddressCommand : AsyncCommandBase
         if (result is true)
         {
             var dialogViewModel = view.DataContext as EditCexDialogViewModel;
-            var inputCexAddress = dialogViewModel?.Address;
+            var inputCexAddress = dialogViewModel?.Address.Trim();
             Debug.WriteLine($"Entered address: {inputCexAddress}");
 
             var selectedAccountInfo = data as AccountInfo;
