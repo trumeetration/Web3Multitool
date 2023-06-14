@@ -21,7 +21,7 @@ public class ExportAccountsToFileCommand : AsyncCommandBase
     
     public override async Task ExecuteAsync(object parameter)
     {
-        var content = _viewTabViewModel.AccountInfos.Aggregate(string.Empty, (current, accountInfo) => current + $"{accountInfo.PrivateKey}:{accountInfo.Address}\n");
+        var content = _viewTabViewModel.AccountInfos.Aggregate(string.Empty, (current, accountInfo) => current + $"{accountInfo.PrivateKey}:{accountInfo.Address}:{accountInfo.CexAddress}\n");
 
         var destinationDirectory = Directory.GetCurrentDirectory() + "\\Export";
 

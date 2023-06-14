@@ -48,6 +48,7 @@ public class GenerateAccountsCommand : AsyncCommandBase
             await Task.Delay(1000);
             await _accountInfosStore.Clear();
             await _accountInfosStore.Add(newAccountInfos);
+            _viewTabViewModel.LoadAccountInfosCommand.Execute(null);
         }
         catch (Exception e)
         {
@@ -63,7 +64,7 @@ public class GenerateAccountsCommand : AsyncCommandBase
     
     private (string, string) GenerateAccount()
     {
-        var privateKey = EthECKey.GenerateKey().GetPrivateKeyAsBytes().ToHex();
+        var privateKey = "0x" + EthECKey.GenerateKey().GetPrivateKeyAsBytes().ToHex();
         var address = EthECKey.GetPublicAddress(privateKey);
 
         return (privateKey, address);

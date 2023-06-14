@@ -63,5 +63,6 @@ public class ImportAccountsFromFileCommand : AsyncCommandBase
         }
 
         await _accountInfosStore.Add(newAccountInfos);
+        _viewTabViewModel.LoadAccountInfosCommand.Execute(null);
     }
 }
