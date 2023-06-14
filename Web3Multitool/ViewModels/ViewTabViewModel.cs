@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -28,6 +29,7 @@ public class ViewTabViewModel : BaseViewModel
     private bool _isLoading;
     private int _totalTxAmount;
     private double _totalUsd;
+    private int _selectedAccountsAmount;
 
     public ICommand ImportAccountsFromFileCommand { get; }
     public ICommand ExportAccountsToFileCommand { get; }
@@ -45,7 +47,7 @@ public class ViewTabViewModel : BaseViewModel
     {
         _accountInfosStore = accountInfosStore;
         _accountInfos = new ObservableCollection<AccountInfo>();
-        
+
         _accountInfosStore.AccountInfosGenerated += AccountInfosStoreOnAccountInfosGenerated;
         _accountInfosStore.AccountInfoDeleted += AccountInfosStoreOnAccountInfoDeleted;
         _accountInfosStore.AccountInfosCleared += AccountInfosStoreOnAccountInfosCleared;
@@ -80,11 +82,20 @@ public class ViewTabViewModel : BaseViewModel
     {
         foreach (var accountInfo in accountInfos)
         {
+            accountInfo.PropertyChanged += AccountInfoOnPropertyChanged;
             _accountInfos.Add(accountInfo);
         }
         OnPropertyChanged(nameof(AnyAccountExists));
     }
-    
+
+    private void AccountInfoOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(AccountInfo.IsSelected))
+        {
+            SelectedAccountsAmount = AccountInfos.Count(acc => acc.IsSelected);
+        }
+    }
+
     private void AccountInfosStoreOnAccountInfoUpdated(AccountInfo accountInfo)
     {
         var accountToUpdate = _accountInfos.FirstOrDefault(x => x.Id == accountInfo.Id);
@@ -98,6 +109,7 @@ public class ViewTabViewModel : BaseViewModel
 
         foreach (var accountInfo in _accountInfosStore.AccountInfos)
         {
+            accountInfo.PropertyChanged += AccountInfoOnPropertyChanged;
             _accountInfos.Add(accountInfo);
         }
         
@@ -158,6 +170,12 @@ public class ViewTabViewModel : BaseViewModel
     {
         get => _totalUsd;
         set => SetField(ref _totalUsd, value);
+    }
+
+    public int SelectedAccountsAmount
+    {
+        get => _selectedAccountsAmount;
+        set => SetField(ref _selectedAccountsAmount, value);
     }
 
     public bool CanGenerate => int.TryParse(GenerateInputAmount, out _);

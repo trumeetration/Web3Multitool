@@ -46,6 +46,9 @@ public class EditCexAddressCommand : AsyncCommandBase
                 PolygonInfo = selectedAccountInfo.PolygonInfo,
                 ArbitrumInfo = selectedAccountInfo.ArbitrumInfo,
                 OptimismInfo = selectedAccountInfo.OptimismInfo,
+                BnbInfo = selectedAccountInfo.BnbInfo,
+                CoredaoInfo = selectedAccountInfo.CoredaoInfo,
+                HarmonyInfo = selectedAccountInfo.HarmonyInfo,
                 TotalBalanceUsd = selectedAccountInfo.TotalBalanceUsd,
                 TotalTxAmount = selectedAccountInfo.TotalTxAmount
             };

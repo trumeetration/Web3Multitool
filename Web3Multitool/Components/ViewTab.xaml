@@ -24,7 +24,7 @@
             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
             Text="Accounts" />
         <Grid
-            Margin="0,0,0,15">
+            Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
@@ -80,21 +80,42 @@
                     Style="{StaticResource MaterialDesignPaperLightButton}" />
             </StackPanel>
         </Grid>
-        <StackPanel
-            Orientation="Horizontal"
-            HorizontalAlignment="Right">
-            <TextBlock
-                Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
-                <Run Text="Total Tx - " />
-                <Run Text="{Binding TotalTxAmount}"/>
-            </TextBlock>
-            <TextBlock 
-                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                Margin="10,0,0,0">
-                <Run Text="Total USD - " />
-                <Run Text="{Binding TotalUsd, Converter={StaticResource DoubleValuesConverter}}"/>
-            </TextBlock>
-        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Left">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
+                    <Run Text="Selected accounts: "/>
+                    <Run Text="{Binding SelectedAccountsAmount}"/>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
+                    <Run Text="Total Tx: " />
+                    <Run Text="{Binding TotalTxAmount}"/>
+                </TextBlock>
+                <TextBlock 
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                    Margin="10,0,0,0">
+                    <Run Text="Total USD: " />
+                    <Run Text="{Binding TotalUsd, Converter={StaticResource DoubleValuesConverter}}"/>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
         <Grid>
             <DataGrid
                 VerticalAlignment="Top"
@@ -112,7 +133,7 @@
                 ItemsSource="{Binding AccountInfos}">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn
-                        Binding="{Binding IsSelected}"
+                        Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
                         IsReadOnly="False">
                         <DataGridCheckBoxColumn.Header>
                             <Border

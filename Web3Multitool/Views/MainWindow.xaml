@@ -10,7 +10,7 @@
         d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow"
-        Width="1100"
+        Width="1120"
         Height="750">
     <Window.Resources>
         <converters:DoubleValuesConverter x:Key="CurrencyRateConverter"></converters:DoubleValuesConverter>
