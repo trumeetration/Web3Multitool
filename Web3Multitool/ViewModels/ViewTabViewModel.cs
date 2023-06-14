@@ -23,6 +23,11 @@ public class ViewTabViewModel : BaseViewModel
 
     private readonly ObservableCollection<AccountInfo> _accountInfos;
     public IEnumerable<AccountInfo> AccountInfos => _accountInfos;
+    
+    private string _generateInputAmount;
+    private bool _isLoading;
+    private int _totalTxAmount;
+    private double _totalUsd;
 
     public ICommand ImportAccountsFromFileCommand { get; }
     public ICommand ExportAccountsToFileCommand { get; }
@@ -127,8 +132,6 @@ public class ViewTabViewModel : BaseViewModel
         OnPropertyChanged(nameof(AnyAccountExists));
     }
 
-    private string _generateInputAmount;
-
     public string GenerateInputAmount
     {
         get => _generateInputAmount;
@@ -139,12 +142,22 @@ public class ViewTabViewModel : BaseViewModel
         }
     }
 
-    private bool _isLoading;
-
     public bool IsLoading
     {
         get => _isLoading;
         set => SetField(ref _isLoading, value);
+    }
+
+    public int TotalTxAmount
+    {
+        get => _totalTxAmount;
+        set => SetField(ref _totalTxAmount, value);
+    }
+
+    public double TotalUsd
+    {
+        get => _totalUsd;
+        set => SetField(ref _totalUsd, value);
     }
 
     public bool CanGenerate => int.TryParse(GenerateInputAmount, out _);

@@ -31,12 +31,9 @@ public class SyncAccountsDataCommand : AsyncCommandBase
     {
         _viewTabViewModel.IsLoading = true;
 
-        if (_providerDictionary == null)
-        {
-            var web3Utils = _viewTabViewModel.MainViewModel.Web3Utils;
-            _providerDictionary = web3Utils.ChainInfosDictionary;
-        }
-        
+        var web3Utils = _viewTabViewModel.MainViewModel.Web3Utils;
+        _providerDictionary = web3Utils.ChainInfosDictionary;
+
         for (int i = 0; i < _accountInfosStore.AccountInfos.Count(); i++)
         {
             var accountInfo = _accountInfosStore.AccountInfos.ElementAt(i);
@@ -161,6 +158,9 @@ public class SyncAccountsDataCommand : AsyncCommandBase
                           updatedAccountInfo.AvaxInfo.TxAmount;
 
             var totalUsd = GetAllChainsTotalBalanceUsd(updatedAccountInfo);
+
+            _viewTabViewModel.TotalUsd += totalUsd;
+            _viewTabViewModel.TotalTxAmount += totalTx;
 
             updatedAccountInfo.TotalTxAmount = totalTx;
             updatedAccountInfo.TotalBalanceUsd = totalUsd;

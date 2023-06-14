@@ -22,6 +22,17 @@ public class LoadAccountInfosCommand : AsyncCommandBase
         try
         {
             await _accountInfosStore.Load();
+            double totalUsd = 0;
+            var totalTx = 0;
+
+            foreach (var acc in _accountInfosStore.AccountInfos)
+            {
+                totalUsd += acc.TotalBalanceUsd;
+                totalTx += acc.TotalTxAmount;
+            }
+
+            _viewTabViewModel.TotalUsd = totalUsd;
+            _viewTabViewModel.TotalTxAmount = totalTx;
         }
         catch (Exception e)
         {

@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance viewModels:ViewTabViewModel}"
              mc:Ignorable="d"
              Name="ViewTabView"
-             d:DesignHeight="1100" d:DesignWidth="1000">
+             d:DesignHeight="560" d:DesignWidth="1000">
     <UserControl.Resources>
         <converters:AddressConverter x:Key="AddressConverter" />
         <converters:DateConverter x:Key="DateConverter" />
@@ -80,11 +80,26 @@
                     Style="{StaticResource MaterialDesignPaperLightButton}" />
             </StackPanel>
         </Grid>
-        <Grid MinHeight="600">
+        <StackPanel
+            Orientation="Horizontal"
+            HorizontalAlignment="Right">
+            <TextBlock
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
+                <Run Text="Total Tx - " />
+                <Run Text="{Binding TotalTxAmount}"/>
+            </TextBlock>
+            <TextBlock 
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                Margin="10,0,0,0">
+                <Run Text="Total USD - " />
+                <Run Text="{Binding TotalUsd, Converter={StaticResource DoubleValuesConverter}}"/>
+            </TextBlock>
+        </StackPanel>
+        <Grid>
             <DataGrid
                 VerticalAlignment="Top"
+                MaxHeight="440"
                 RowDetailsVisibilityMode="VisibleWhenSelected"
-                MaxHeight="500"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                 AutoGenerateColumns="False"

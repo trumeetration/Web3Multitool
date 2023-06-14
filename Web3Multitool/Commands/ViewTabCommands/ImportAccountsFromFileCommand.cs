@@ -40,7 +40,7 @@ public class ImportAccountsFromFileCommand : AsyncCommandBase
             var privateKey = line.Contains(':')
                 ? line.Split(':')[0]
                 : line.Trim().Replace(Environment.NewLine, String.Empty);
-
+            
             if (privateKey.Length == 0) continue;
             
             var address = EthECKey.GetPublicAddress(privateKey);
