@@ -91,11 +91,65 @@
                 Orientation="Horizontal"
                 HorizontalAlignment="Left">
                 <TextBlock
+                    Width="150"
                     VerticalAlignment="Center"
                     Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
                     <Run Text="Selected accounts: "/>
                     <Run Text="{Binding SelectedAccountsAmount}"/>
                 </TextBlock>
+                <Button
+                    Margin="10,0,0,0"
+                    Width="32"
+                    Height="32"
+                    Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
+                    Command="{Binding CopyAddressesCommand}"
+                    IsEnabled="{Binding AnyAccountExists}"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    ToolTip="Copy addresses">
+                    <materialDesign:PackIcon
+                        Height="16"
+                        Width="16"
+                        Kind="ContentCopy" />
+                </Button>
+                <Button
+                    Margin="10,0,0,0"
+                    Width="32"
+                    Height="32"
+                    Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
+                    IsEnabled="{Binding AnyAccountExists}"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    ToolTip="Copy addresses">
+                    <materialDesign:PackIcon
+                        Height="16"
+                        Width="16"
+                        Kind="Edit" />
+                </Button>
+                <Button
+                    Margin="10,0,0,0"
+                    Width="32"
+                    Height="32"
+                    Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
+                    IsEnabled="{Binding AnyAccountExists}"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    ToolTip="Deposit to selected addresses">
+                    <materialDesign:PackIcon
+                        Height="16"
+                        Width="16"
+                        Kind="CashPlus" />
+                </Button>
+                <Button
+                    Margin="10,0,0,0"
+                    Width="32"
+                    Height="32"
+                    Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
+                    IsEnabled="{Binding AnyAccountExists}"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    ToolTip="Withdraw from selected addresses">
+                    <materialDesign:PackIcon
+                        Height="16"
+                        Width="16"
+                        Kind="CashMinus" />
+                </Button>
             </StackPanel>
             <StackPanel
                 Grid.Column="2"

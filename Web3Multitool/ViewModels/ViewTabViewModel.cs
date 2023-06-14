@@ -42,6 +42,8 @@ public class ViewTabViewModel : BaseViewModel
 
     public ICommand SyncAccountsDataCommand { get; }
     
+    public ICommand CopyAddressesCommand { get; }
+    
 
     public ViewTabViewModel(AccountInfosStore accountInfosStore)
     {
@@ -64,6 +66,7 @@ public class ViewTabViewModel : BaseViewModel
         DepositToAddressDialog = new DepositToAddressCommand(this, _accountInfosStore);
         GenerateAccountsCommand = new GenerateAccountsCommand(this, _accountInfosStore);
         SyncAccountsDataCommand = new SyncAccountsDataCommand(this, _accountInfosStore);
+        CopyAddressesCommand = new CopyAddressesCommand(this, _accountInfosStore);
     }
 
     protected override void Dispose()
@@ -72,7 +75,7 @@ public class ViewTabViewModel : BaseViewModel
         _accountInfosStore.AccountInfoDeleted -= AccountInfosStoreOnAccountInfoDeleted;
         _accountInfosStore.AccountInfosCleared -= AccountInfosStoreOnAccountInfosCleared;
         _accountInfosStore.AccountInfosLoaded -= AccountInfosStoreOnAccountInfosLoaded;
-        _accountInfosStore.AccountInfoUpdated += AccountInfosStoreOnAccountInfoUpdated;
+        _accountInfosStore.AccountInfoUpdated -= AccountInfosStoreOnAccountInfoUpdated;
         _accountInfosStore.AccountInfosImported -= AccountInfosStoreOnAccountInfosImported;
 
         base.Dispose();
