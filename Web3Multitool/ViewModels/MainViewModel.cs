@@ -62,7 +62,7 @@ public class MainViewModel : BaseViewModel
 
         ConnectToRpcList();
 
-        _timer = new Timer(60000);
+        _timer = new Timer(300000);
         _timer.Elapsed += async (_, _) => await GetCurrenciesRate();
         _timer.Start();
 
