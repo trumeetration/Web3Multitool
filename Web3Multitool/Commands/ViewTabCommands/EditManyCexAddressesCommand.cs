@@ -35,9 +35,9 @@ public class EditManyCexAddressesCommand : AsyncCommandBase
             var dialogViewModel = view.DataContext as EditManyCexDialogViewModel;
             var inputCexAddresses = dialogViewModel?.Addresses.Trim().Split(Environment.NewLine);
 
-            if (inputCexAddresses.Length == _viewTabViewModel.AccountInfos.Count(acc => acc.IsSelected))
+            if (inputCexAddresses.Length == _accountInfosStore.AccountInfos.Count(acc => acc.IsSelected))
             {
-                var accountsToUpdate = _viewTabViewModel.AccountInfos.Where(acc => acc.IsSelected).ToList();
+                var accountsToUpdate = _accountInfosStore.AccountInfos.Where(acc => acc.IsSelected).ToList();
 
                 for (int i = 0; i < inputCexAddresses.Length; i++)
                 {
