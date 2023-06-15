@@ -129,6 +129,7 @@
                     Margin="10,0,0,0"
                     Width="32"
                     Height="32"
+                    Command="{Binding DepositToManyAddressCommand}"
                     Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                     IsEnabled="{Binding AnyAccountExists}"
                     Style="{StaticResource MaterialDesignIconButton}"

@@ -39,12 +39,10 @@ public class ViewTabViewModel : BaseViewModel
     public ICommand DepositToAddressDialog { get; }
     public ICommand GenerateAccountsCommand { get; }
     public ICommand LoadAccountInfosCommand { get; }
-
     public ICommand SyncAccountsDataCommand { get; }
-    
     public ICommand CopyAddressesCommand { get; }
-    
     public ICommand EditManyCexAddressesCommand { get; }
+    public ICommand DepositToManyAddressCommand { get; }
     
 
     public ViewTabViewModel(AccountInfosStore accountInfosStore)
@@ -70,6 +68,7 @@ public class ViewTabViewModel : BaseViewModel
         SyncAccountsDataCommand = new SyncAccountsDataCommand(this, _accountInfosStore);
         CopyAddressesCommand = new CopyAddressesCommand(this, _accountInfosStore);
         EditManyCexAddressesCommand = new EditManyCexAddressesCommand(this, _accountInfosStore);
+        DepositToManyAddressCommand = new DepositToManyAddressCommand(this, _accountInfosStore);
     }
 
     protected override void Dispose()
