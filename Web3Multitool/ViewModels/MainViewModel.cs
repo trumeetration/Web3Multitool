@@ -187,8 +187,6 @@ public class MainViewModel : BaseViewModel
     {
         var dateTime = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         Log += $"{dateTime} | {message}{Environment.NewLine}";
-        
-        
     }
     
     private async Task GetCurrenciesRate()

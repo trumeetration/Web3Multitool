@@ -5,7 +5,9 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using MaterialDesignThemes.Wpf;
 using OKX.Api;
+using OKX.Api.Enums;
 using Web3Multitool.Dialogs;
+using Web3MultiTool.Domain.Models;
 using Web3Multitool.Stores;
 using Web3Multitool.Utils;
 using Web3Multitool.ViewModels;
@@ -22,12 +24,36 @@ public class DepositToManyAddressCommand : AsyncCommandBase
         _viewTabViewModel = viewTabViewModel;
         _accountInfosStore = accountInfosStore;
     }
-    
+
     public override async Task ExecuteAsync(object parameter)
     {
+        _viewTabViewModel.IsLoading = true;
+
+        // Get currencies and send it to dialog viewmodel
+        var api = new OKXRestApiClient();
+        var apiCredentials = _viewTabViewModel.MainViewModel.OKXApiInfo;
+        api.SetApiCredentials(apiCredentials.ApiKey, apiCredentials.SecretKey, apiCredentials.PassPhrase);
+
+        var balanceResponse = await api.Funding.GetFundingBalanceAsync();
+        var currenciesResponse = await api.Funding.GetCurrenciesAsync();
+
+        _viewTabViewModel.IsLoading = false;
+
+        if (balanceResponse.Success == false)
+        {
+            Debug.WriteLine($"get currencies info error: {balanceResponse.Error.Message}");
+            return;
+        }
+
+        if (currenciesResponse.Success == false)
+        {
+            Debug.WriteLine($"get currencies info error: {currenciesResponse.Error.Message}");
+            return;
+        }
+
         var view = new DepositToManyAddressDialog()
         {
-            DataContext = new DepositToManyAddressDialogViewModel()
+            DataContext = new DepositToManyAddressDialogViewModel(currenciesResponse.Data, balanceResponse.Data)
         };
 
         var result = await DialogHost.Show(view, "RootDialog");
@@ -38,43 +64,49 @@ public class DepositToManyAddressCommand : AsyncCommandBase
         var selectedChain = dialogViewModel.SelectedChain;
         var selectedCoin = dialogViewModel.SelectedCoin;
         var selectedAmountFrom = Convert.ToDouble(dialogViewModel.AmountFrom);
-        var selectedAmountTo = dialogViewModel.NeedToRandomize ? Convert.ToDouble(dialogViewModel.AmountTo) : selectedAmountFrom;
+        var selectedAmountTo = dialogViewModel.NeedToRandomize
+            ? Convert.ToDouble(dialogViewModel.AmountTo)
+            : selectedAmountFrom;
         var minDelay = Convert.ToDouble(dialogViewModel.MinDelay);
         var maxDelay = Convert.ToDouble(dialogViewModel.MaxDelay);
-        
-        var selectedAccounts = _accountInfosStore.AccountInfos.Where(acc => acc.IsSelected);
-        
-        var api = new OKXRestApiClient();
-        var apiCredentials = _viewTabViewModel.MainViewModel.OKXApiInfo;
-        api.SetApiCredentials(apiCredentials.ApiKey, apiCredentials.SecretKey, apiCredentials.PassPhrase);
-        
-        var apiGetCurrenciesResponse = await api.Funding.GetCurrenciesAsync();
 
-        if (apiGetCurrenciesResponse.Success == false)
+        var selectedAccounts = _accountInfosStore.AccountInfos.Where(acc => acc.IsSelected);
+
+        var processedAmount = 0;
+        var accountInfos = selectedAccounts as AccountInfo[] ?? selectedAccounts.ToArray();
+        var rng = new Random();
+        var keys = accountInfos.Select(e => rng.NextDouble()).ToArray();
+        Array.Sort(keys, accountInfos);
+        var total = accountInfos.Length;
+        foreach (var account in accountInfos)
         {
-            Debug.WriteLine($"get currencies info error: {apiGetCurrenciesResponse.Error.Message}");
-            return;
-        }
-        
-        var currency = apiGetCurrenciesResponse.Data.SingleOrDefault(coin => coin.Currency == selectedCoin && coin.Chain == selectedChain);
-        
-        foreach (var account in selectedAccounts)
-        {
-            var amountToDeposit = GetDoubleWithinRange(selectedAmountFrom, selectedAmountTo);
-            
-            _viewTabViewModel.MainViewModel.AppendToLog($"Withdrawing for {account.Address} {amountToDeposit} {selectedCoin}");
-            
-            // var result = await api.Funding.WithdrawAsync()
-            
-            _viewTabViewModel.MainViewModel.AppendToLog($"Success for {account.Address}");
+            var amountToDeposit = decimal.Round((decimal)GetDoubleWithinRange(selectedAmountFrom, selectedAmountTo), 5);
+
+            _viewTabViewModel.MainViewModel.AppendToLog(
+                $"[{processedAmount+1}/{total}] Withdrawing for {account.Address} {amountToDeposit} {selectedCoin.Symbol}");
+
+            var withdrawResult = await api.Funding.WithdrawAsync(selectedCoin.Symbol, amountToDeposit,
+                OkxWithdrawalDestination.DigitalCurrencyAddress, account.Address, selectedChain.Fee,
+                selectedChain.Chain);
+
+            if (withdrawResult.Data is null)
+            {
+                _viewTabViewModel.MainViewModel.AppendToLog($"[{processedAmount+1}/{total}] Fail for {account.Address} - {withdrawResult.Error?.Message}");
+            }
+            else
+            {
+                _viewTabViewModel.MainViewModel.AppendToLog($"[{processedAmount+1}/{total}] Success for {account.Address} - {withdrawResult.Data.WithdrawalId}");
+            }
             
             // Sleep some time
             var sleepTime = GetDoubleWithinRange(minDelay, maxDelay);
+            _viewTabViewModel.MainViewModel.AppendToLog($"Sleeping {sleepTime} seconds");
             await Task.Delay(TimeSpan.FromSeconds(sleepTime));
-            _viewTabViewModel.MainViewModel.AppendToLog($"Slept {sleepTime} seconds");
+
+            processedAmount++;
         }
     }
-    
+
     private double GetDoubleWithinRange(double lowerBound, double upperBound)
     {
         var random = new Random();

@@ -9,52 +9,72 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              d:DataContext="{d:DesignInstance viewModels:DepositToManyAddressDialogViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="350" d:DesignWidth="300">
+             d:DesignHeight="380" d:DesignWidth="260">
     <StackPanel Orientation="Vertical"
                 HorizontalAlignment="Center"
                 Margin="30">
-        <ComboBox ItemsSource="{Binding AvailableCoinToDepositCollection}"
-                  DisplayMemberPath="Key"
+        <ComboBox ItemsSource="{Binding Coins}"
+                  DisplayMemberPath="Symbol"
                   SelectedValue="{Binding SelectedCoin}"
-                  SelectedValuePath="Key"
                   materialDesign:HintAssist.Hint="Coin to deposit"
                   Margin="0,10"
                   Width="150"
-                  HorizontalAlignment="Left">
-        </ComboBox>
-        <ComboBox ItemsSource="{Binding SelectedCoinChainCollection}"
+                  HorizontalAlignment="Left" />
+        <ComboBox ItemsSource="{Binding SelectedCoinChainInfosCollection}"
+                  DisplayMemberPath="Chain"
                   SelectedValue="{Binding SelectedChain}"
                   materialDesign:HintAssist.Hint="Chain for deposit"
                   Margin="0,10"
                   Width="150"
-                  HorizontalAlignment="Left">
-        </ComboBox>
+                  HorizontalAlignment="Left" />
+        <TextBlock>
+            <Run Text="Balance: " />
+            <Run Text="{Binding CoinBalance}" />
+        </TextBlock>
         <TextBox Text="{Binding AmountFrom, UpdateSourceTrigger=PropertyChanged}"
                  Width="100"
                  HorizontalAlignment="Left"
                  Margin="0,10"
-                 materialDesign:HintAssist.Hint="Min value"></TextBox>
+                 materialDesign:HintAssist.Hint="Min value" />
         <CheckBox IsChecked="{Binding NeedToRandomize}"
-                  Content="Need to randomize?"></CheckBox>
+                  Content="Need to randomize?" />
         <TextBox Text="{Binding AmountTo, UpdateSourceTrigger=PropertyChanged}"
                  Width="100"
                  HorizontalAlignment="Left"
                  Margin="0,10"
                  IsEnabled="{Binding NeedToRandomize}"
-                 materialDesign:HintAssist.Hint="Max value"></TextBox>
+                 materialDesign:HintAssist.Hint="Max value" />
         <StackPanel
             Orientation="Horizontal">
             <TextBox Text="{Binding MinDelay, UpdateSourceTrigger=PropertyChanged}"
                      Width="70"
                      HorizontalAlignment="Left"
                      Margin="0,10,10,10"
-                     materialDesign:HintAssist.Hint="Min delay"></TextBox>
+                     materialDesign:HintAssist.Hint="Min delay" />
             <TextBox Text="{Binding MaxDelay, UpdateSourceTrigger=PropertyChanged}"
                      Width="70"
                      HorizontalAlignment="Left"
                      Margin="0,10"
-                     materialDesign:HintAssist.Hint="Max delay"></TextBox>
+                     materialDesign:HintAssist.Hint="Max delay" />
         </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Column="0"
+                HorizontalAlignment="Left">
+                <Run Text="Fee: " />
+                <Run Text="{Binding SelectedChain.Fee}"></Run>
+            </TextBlock>
+            <TextBlock
+                Grid.Column="1"
+                HorizontalAlignment="Left">
+                <Run Text="Min value: " />
+                <Run Text="{Binding SelectedChain.MinWithdrawAmount}"></Run>
+            </TextBlock>
+        </Grid>
         <StackPanel Margin="0,10,0,0"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">

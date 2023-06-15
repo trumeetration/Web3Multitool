@@ -30,6 +30,8 @@ public class SyncAccountsDataCommand : AsyncCommandBase
     public override async Task ExecuteAsync(object parameter)
     {
         _viewTabViewModel.IsLoading = true;
+        _viewTabViewModel.TotalUsd = 0;
+        _viewTabViewModel.TotalTxAmount = 0;
 
         var web3Utils = _viewTabViewModel.MainViewModel.Web3Utils;
         _providerDictionary = web3Utils.ChainInfosDictionary;
