@@ -255,6 +255,7 @@
                 Text="{Binding Log}"
                 VerticalAlignment="Stretch"
                 TextWrapping="Wrap"
+                TextAlignment="Left"
                 IsReadOnly="True"
                 FontSize="14"
                 VerticalContentAlignment="Top"
