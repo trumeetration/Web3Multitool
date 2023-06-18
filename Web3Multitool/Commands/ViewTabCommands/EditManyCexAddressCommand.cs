@@ -10,12 +10,12 @@ using Web3Multitool.ViewModels;
 
 namespace Web3Multitool.Commands;
 
-public class EditManyCexAddressesCommand : AsyncCommandBase
+public class EditManyCexAddressCommand : AsyncCommandBase
 {
     private readonly ViewTabViewModel _viewTabViewModel;
     private readonly AccountInfosStore _accountInfosStore;
 
-    public EditManyCexAddressesCommand(ViewTabViewModel viewTabViewModel, AccountInfosStore accountInfosStore)
+    public EditManyCexAddressCommand(ViewTabViewModel viewTabViewModel, AccountInfosStore accountInfosStore)
     {
         _viewTabViewModel = viewTabViewModel;
         _accountInfosStore = accountInfosStore;
