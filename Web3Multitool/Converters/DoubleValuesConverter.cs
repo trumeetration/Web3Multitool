@@ -11,7 +11,14 @@ public class DoubleValuesConverter : IValueConverter
     {
         try
         {
-            return value == null ? "0" : $"{value:N2}";
+            if (parameter is null)
+            {
+                return value == null ? "0" : $"{value:N2}";
+            }
+            else
+            {
+                return value == null ? "0" : ((double)value).ToString($"N{parameter}");   
+            }
         }
         catch (Exception e)
         {
