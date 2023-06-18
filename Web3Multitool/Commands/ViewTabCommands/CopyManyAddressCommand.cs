@@ -7,12 +7,12 @@ using Web3Multitool.ViewModels;
 
 namespace Web3Multitool.Commands;
 
-public class CopyAddressesCommand : CommandBase
+public class CopyManyAddressCommand : CommandBase
 {
     private readonly ViewTabViewModel _viewTabViewModel;
     private readonly AccountInfosStore _accountInfosStore;
 
-    public CopyAddressesCommand(ViewTabViewModel viewTabViewModel, AccountInfosStore accountInfosStore)
+    public CopyManyAddressCommand(ViewTabViewModel viewTabViewModel, AccountInfosStore accountInfosStore)
     {
         _viewTabViewModel = viewTabViewModel;
         _accountInfosStore = accountInfosStore;
