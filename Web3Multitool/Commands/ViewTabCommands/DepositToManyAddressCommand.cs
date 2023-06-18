@@ -110,6 +110,6 @@ public class DepositToManyAddressCommand : AsyncCommandBase
     private double GetDoubleWithinRange(double lowerBound, double upperBound)
     {
         var random = new Random();
-        return random.NextDouble() * (upperBound - lowerBound) + lowerBound;
+        return Convert.ToDouble($"{(random.NextDouble() * (upperBound - lowerBound) + lowerBound):N6}");
     }
 }
