@@ -13,6 +13,8 @@ public class DepositToManyAddressDialogViewModel : BaseViewModel
         "BNB",
         "MATIC",
         "AVAX",
+        "ONE",
+        "CORE",
         "USDC",
         "USDT"
     };
