@@ -30,9 +30,7 @@ public class WithdrawFromAddressCommand : AsyncCommandBase
         var result = await DialogHost.Show(view, "RootDialog");
         
         // Todo: Add logic to withdraw funds from address
-        
-        
-        
+
         Debug.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
     }
 }
