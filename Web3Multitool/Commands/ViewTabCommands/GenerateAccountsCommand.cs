@@ -46,7 +46,6 @@ public class GenerateAccountsCommand : AsyncCommandBase
         try
         {
             await Task.Delay(1000);
-            await _accountInfosStore.Clear();
             await _accountInfosStore.Add(newAccountInfos);
             _viewTabViewModel.LoadAccountInfosCommand.Execute(null);
         }
