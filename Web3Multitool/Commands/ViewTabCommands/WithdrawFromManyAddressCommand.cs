@@ -91,8 +91,9 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
         {
             if (await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint))
             {
+                _processedAmount++;
                 var sleepTime = GetDoubleWithinRange(minDelay, maxDelay);
-                _mainViewModel.AppendToLog($"[{_processedAmount + 1}/{_total}] - Sleeping {sleepTime:N2} seconds");
+                _mainViewModel.AppendToLog($"[{_processedAmount}/{_total}] - Sleeping {sleepTime:N2} seconds");
                 await Task.Delay(TimeSpan.FromSeconds(sleepTime));
             }
         }
@@ -125,6 +126,79 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
         if (selectedCoin == "native")
         {
             // todo
+            var balanceWei = await web3.Eth.GetBalance.SendRequestAsync(account.Address);
+            var transferValueWei =
+                Web3.Convert.ToWei(
+                    (double)Math.Round(
+                        Web3.Convert.FromWei(balanceWei - Web3.Convert.ToWei(remainAmount)), 6,
+                        MidpointRounding.ToZero));
+            var transferValueEther = Web3.Convert.FromWei(transferValueWei);
+
+            if (transferValueWei <= 0)
+            {
+                Debug.WriteLine("transfer value is lower than 0... balance could be low");
+                _mainViewModel.AppendToLog(
+                    $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} Low balance: {Web3.Convert.FromWei(transferValueWei):N6}");
+                _processedAmount++;
+                return false;
+            }
+
+            var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
+            HexBigInteger? gasEstimate = BigInteger.Zero.ToHexBigInteger();
+
+            try
+            {
+                gasEstimate = (await web3.Eth.GetEtherTransferService()
+                    .EstimateGasAsync(account.CexAddress, transferValueEther)).ToHexBigInteger();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                _mainViewModel.AppendToLog(
+                    $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with estimateGas");
+                await Task.Delay(2000);
+                return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
+                    attempt + 1);
+            }
+
+            string txHash;
+            decimal formattedMaxFeePaid;
+
+            try
+            {
+                if (selectedChain.Id is Chain.Binance or Chain.Coredao or Chain.Fantom or Chain.Harmony)
+                {
+                    // EIP-1559 is not supported
+                    var gasPriceGwei = Web3.Convert.FromWei(gasPrice, UnitConversion.EthUnit.Gwei);
+                    txHash = await web3.Eth.GetEtherTransferService().TransferEtherAsync(account.CexAddress,
+                        transferValueEther, gasPriceGwei, gasEstimate);
+
+                    formattedMaxFeePaid = Web3.Convert.FromWei(gasPrice.Value * gasEstimate.Value);
+                }
+                else
+                {
+                    // EIP-1559 is supported
+                    var (maxFeePerGas, maxPriorityFeePerGas) = CalculateEip1559GasInfo(gasPrice, selectedChain.Id);
+
+                    txHash = await web3.Eth.GetEtherTransferService().TransferEtherAsync(account.CexAddress,
+                        transferValueEther, maxPriorityFeePerGas, maxFeePerGas);
+
+                    formattedMaxFeePaid = Web3.Convert.FromWei(gasEstimate.Value * maxFeePerGas.Value);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                _mainViewModel.AppendToLog(
+                    $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with sendTransaction");
+                await Task.Delay(2000);
+                return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
+                    attempt + 1);
+            }
+
+            Debug.WriteLine(txHash);
+            _mainViewModel.AppendToLog(
+                $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} amount {transferValueEther:N5} fee {formattedMaxFeePaid:N5} hash {txHash}");
             return true;
         }
         else
@@ -178,37 +252,25 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
             string txHash;
             decimal formattedMaxFeePaid;
 
-            if (selectedChain.Id is Chain.Binance or Chain.Coredao or Chain.Fantom or Chain.Harmony)
+            try
             {
-                // EIP-1559 is not supported
-                try
+                if (selectedChain.Id is Chain.Binance or Chain.Coredao or Chain.Fantom or Chain.Harmony)
                 {
+                    // EIP-1559 is not supported
                     txHash = await transfer.SendTransactionAsync(
                         from: account.Address,
                         gas: gasEstimate,
                         gasPrice: gasPrice,
                         value: null,
                         functionInput: parameters);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                    _mainViewModel.AppendToLog(
-                        $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with sendTransaction");
-                    await Task.Delay(2000);
-                    return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
-                        attempt + 1);
-                }
 
-                formattedMaxFeePaid = Web3.Convert.FromWei(gasPrice.Value * gasEstimate.Value);
-            }
-            else
-            {
-                // EIP-1559 is supported
-                var (maxFeePerGas, maxPriorityFeePerGas) = CalculateEip1559GasInfo(gasPrice, selectedChain.Id);
-
-                try
+                    formattedMaxFeePaid = Web3.Convert.FromWei(gasPrice.Value * gasEstimate.Value);
+                }
+                else
                 {
+                    // EIP-1559 is supported
+                    var (maxFeePerGas, maxPriorityFeePerGas) = CalculateEip1559GasInfo(gasPrice, selectedChain.Id);
+
                     txHash = await transfer.SendTransactionAsync(
                         from: account.Address,
                         gas: gasEstimate,
@@ -217,18 +279,18 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
                         maxPriorityFeePerGas: maxPriorityFeePerGas,
                         functionInput: parameters
                     );
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e);
-                    _mainViewModel.AppendToLog(
-                        $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with sendTransaction");
-                    await Task.Delay(2000);
-                    return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
-                        attempt + 1);
-                }
 
-                formattedMaxFeePaid = Web3.Convert.FromWei(gasEstimate.Value * maxFeePerGas.Value);
+                    formattedMaxFeePaid = Web3.Convert.FromWei(gasEstimate.Value * maxFeePerGas.Value);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                _mainViewModel.AppendToLog(
+                    $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with sendTransaction");
+                await Task.Delay(2000);
+                return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
+                    attempt + 1);
             }
 
             Debug.WriteLine(txHash);
