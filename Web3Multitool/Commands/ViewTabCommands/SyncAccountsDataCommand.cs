@@ -18,7 +18,6 @@ public class SyncAccountsDataCommand : AsyncCommandBase
 {
     private readonly ViewTabViewModel _viewTabViewModel;
     private readonly AccountInfosStore _accountInfosStore;
-    private Dictionary<Chain, Web3Utils.ChainInfo> _providerDictionary;
 
     public SyncAccountsDataCommand(ViewTabViewModel viewTabViewModel, AccountInfosStore accountInfosStore)
     {
@@ -34,13 +33,13 @@ public class SyncAccountsDataCommand : AsyncCommandBase
         _viewTabViewModel.TotalTxAmount = 0;
 
         var web3Utils = _viewTabViewModel.MainViewModel.Web3Utils;
-        _providerDictionary = web3Utils.ChainInfosDictionary;
+        var providerDictionary = web3Utils.ChainInfosDictionary;
 
         for (int i = 0; i < _accountInfosStore.AccountInfos.Count(); i++)
         {
             var accountInfo = _accountInfosStore.AccountInfos.ElementAt(i);
             var address = accountInfo.Address;
-            var addressInfo = await GetAddressInfo(address);
+            var addressInfo = await GetAddressInfo(address, providerDictionary);
 
             var updatedAccountInfo = new AccountInfo
             {
@@ -200,11 +199,11 @@ public class SyncAccountsDataCommand : AsyncCommandBase
                GetChainTotalBalanceUsd(updatedAccountInfo.AvaxInfo, avaxPrice);
     }
     
-    private async Task<Dictionary<Chain, AddressInfo>> GetAddressInfo(string address)
+    private async Task<Dictionary<Chain, AddressInfo>> GetAddressInfo(string address, Dictionary<Chain, Web3Utils.ChainInfo> providerDictionary)
     {
         var addressInfosDictionary = new Dictionary<Chain, AddressInfo>();
 
-        await Task.WhenAll(_providerDictionary.Select(async pair =>
+        await Task.WhenAll(providerDictionary.Select(async pair =>
         {
             try
             {
