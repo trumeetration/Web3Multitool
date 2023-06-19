@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -27,6 +28,9 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
 {
     private readonly ViewTabViewModel _viewTabViewModel;
     private readonly AccountInfosStore _accountInfosStore;
+    private MainViewModel _mainViewModel;
+    private int _processedAmount = 0;
+    private int _total;
 
     public WithdrawFromManyAddressCommand(ViewTabViewModel viewTabViewModel, AccountInfosStore accountInfosStore)
     {
@@ -36,6 +40,8 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
 
     public override async Task ExecuteAsync(object parameter)
     {
+        _mainViewModel = _viewTabViewModel.MainViewModel;
+
         var view = new WithdrawManyToCexDialog()
         {
             DataContext = new WithdrawManyToCexDialogViewModel()
@@ -49,18 +55,18 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
 
         var dialogViewModel = view.DataContext as WithdrawManyToCexDialogViewModel;
         var selectedChain = dialogViewModel.SelectedChain;
+        var endpoint = _viewTabViewModel.MainViewModel.Web3Utils.ChainInfosDictionary[selectedChain.Id].Endpoint;
 
         // Check if RPC works
         try
         {
-            var _web3 = new Web3(_viewTabViewModel.MainViewModel.Web3Utils.ChainInfosDictionary[selectedChain.Id]
-                .Endpoint);
+            var _web3 = new Web3(endpoint);
             await _web3.Eth.ChainId.SendRequestAsync();
         }
         catch (Exception e)
         {
             Debug.WriteLine(e);
-            _viewTabViewModel.MainViewModel.AppendToLog("Invalid RPC in config");
+            _mainViewModel.AppendToLog("Invalid RPC in config");
             return;
         }
 
@@ -77,137 +83,169 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
         var selectedAccounts = _accountInfosStore.AccountInfos
             .Where(acc => acc.IsSelected)
             .ToArray();
-        var rng = new Random();
-        var keys = selectedAccounts.Select(_ => rng.NextDouble()).ToArray();
-        Array.Sort(keys, selectedAccounts);
+        ShuffleAccounts(selectedAccounts);
 
-        var processedAmount = 0;
-        var total = selectedAccounts.Length;
+        _total = selectedAccounts.Length;
 
         foreach (var account in selectedAccounts)
         {
-            if (account.CexAddress is null)
+            if (await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint))
             {
-                Debug.WriteLine("Cex address is not set");
-                _viewTabViewModel.MainViewModel.AppendToLog(
-                    $"[{processedAmount + 1}/{total}] - {account.Address} doesn't have CEX address");
-                processedAmount++;
-                continue;
+                var sleepTime = GetDoubleWithinRange(minDelay, maxDelay);
+                _mainViewModel.AppendToLog($"[{_processedAmount + 1}/{_total}] - Sleeping {sleepTime:N2} seconds");
+                await Task.Delay(TimeSpan.FromSeconds(sleepTime));
+            }
+        }
+    }
+
+    private async Task<bool> MakeTransaction(AccountInfo account, string selectedCoin, double minRemain,
+        double maxRemain,
+        WithdrawManyToCexDialogViewModel.Chain selectedChain, string endpoint, int attempt = 1)
+    {
+        if (attempt > 5)
+        {
+            Debug.WriteLine("5 tries failed");
+            return false;
+        }
+
+        if (account.CexAddress is null)
+        {
+            Debug.WriteLine("Cex address is not set");
+            _mainViewModel.AppendToLog(
+                $"[{_processedAmount + 1}/{_total}] - {account.Address} doesn't have CEX address");
+            _processedAmount++;
+            return false;
+        }
+
+        var remainAmount = GetDoubleWithinRange(minRemain, maxRemain);
+
+        var web3Account = new Account(account.PrivateKey, (int)selectedChain.Id);
+        var web3 = new Web3(web3Account, endpoint);
+
+        if (selectedCoin == "native")
+        {
+            // todo
+            return true;
+        }
+        else
+        {
+            var coinInfo = Web3Utils.CoinInfosDictionary[selectedChain.Id][selectedCoin];
+            var coinContract = web3.Eth.GetContract(coinInfo.ABI, coinInfo.ContractAddress);
+            var balanceOf = coinContract.GetFunction("balanceOf");
+            var balanceWei = await balanceOf.CallAsync<BigInteger>(account.Address);
+            var transferValue =
+                Web3.Convert.ToWei(
+                    (double)Math.Round(
+                        Web3.Convert.FromWei(balanceWei - Web3.Convert.ToWei(remainAmount, selectedChain.Id),
+                            selectedChain.Id), 6, MidpointRounding.ToZero), selectedChain.Id);
+
+            if (transferValue <= 0)
+            {
+                Debug.WriteLine("transfer value is lower than 0... balance could be low");
+                _mainViewModel.AppendToLog(
+                    $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} Invalid remain amount: {Web3.Convert.FromWei(balanceWei, selectedChain.Id)}");
+                _processedAmount++;
+                return false;
             }
 
-            var remainAmount = GetDoubleWithinRange(minRemain, maxRemain);
-
-            var endpoint = _viewTabViewModel.MainViewModel.Web3Utils.ChainInfosDictionary[selectedChain.Id].Endpoint;
-            var web3Account = new Account(account.PrivateKey, (int)selectedChain.Id);
-            var web3 = new Web3(web3Account, endpoint);
-
-            if (selectedCoin == "native")
+            var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
+            var parameters = new object[]
             {
-                var balance = await GetNativeBalance(account.Address, web3);
-                // todo
+                account.CexAddress,
+                transferValue
+            };
+            var transfer = coinContract.GetFunction("transfer");
+
+            HexBigInteger? gasEstimate = BigInteger.Zero.ToHexBigInteger();
+            try
+            {
+                gasEstimate = await transfer.EstimateGasAsync(
+                    from: account.Address,
+                    gas: null,
+                    value: null,
+                    functionInput: parameters);
             }
-            else
+            catch (Exception e)
             {
-                var coinInfo = Utils.Web3Utils.CoinInfosDictionary[selectedChain.Id][selectedCoin];
-                var coinContract = web3.Eth.GetContract(coinInfo.ABI, coinInfo.ContractAddress);
-                var balanceOf = coinContract.GetFunction("balanceOf");
-                var balanceWei = await balanceOf.CallAsync<BigInteger>(account.Address);
-                var transferValue = balanceWei - Web3.Convert.ToWei(remainAmount, selectedChain.Id);
+                Debug.WriteLine(e);
+                _mainViewModel.AppendToLog(
+                    $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with estimateGas");
+                await Task.Delay(2000);
+                return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
+                    attempt + 1);
+            }
 
-                if (transferValue <= 0)
-                {
-                    Debug.WriteLine("transfer value is lower than 0... balance could be low");
-                    _viewTabViewModel.MainViewModel.AppendToLog(
-                        $"[{processedAmount + 1}/{total}] - 0x...{account.Address[^8..]} Invalid remain amount: {Web3.Convert.FromWei(balanceWei, selectedChain.Id)}");
-                    processedAmount++;
-                    continue;
-                }
+            string txHash;
+            decimal formattedMaxFeePaid;
 
-                var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
-                var parameters = new object[]
-                {
-                    account.CexAddress,
-                    transferValue
-                };
-                var transfer = coinContract.GetFunction("transfer");
-
-                HexBigInteger? gasEstimate = BigInteger.Zero.ToHexBigInteger();
+            if (selectedChain.Id is Chain.Binance or Chain.Coredao or Chain.Fantom or Chain.Harmony)
+            {
+                // EIP-1559 is not supported
                 try
                 {
-                    gasEstimate = await transfer.EstimateGasAsync(
+                    txHash = await transfer.SendTransactionAsync(
                         from: account.Address,
-                        gas: null,
+                        gas: gasEstimate,
+                        gasPrice: gasPrice,
                         value: null,
                         functionInput: parameters);
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine(e);
-                    _viewTabViewModel.MainViewModel.AppendToLog($"[{processedAmount + 1}/{total}] - 0x...{account.Address[^8..]} error with estimateGas");
-                    processedAmount++;
-                    continue;
+                    _mainViewModel.AppendToLog(
+                        $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with sendTransaction");
+                    await Task.Delay(2000);
+                    return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
+                        attempt + 1);
                 }
 
-                string txHash;
-                decimal formattedMaxFeePaid;
-
-                if (selectedChain.Id is Chain.Binance or Chain.Coredao or Chain.Fantom or Chain.Harmony)
-                {
-                    // EIP-1559 is not supported
-                    try
-                    {
-                        txHash = await transfer.SendTransactionAsync(
-                            from: account.Address,
-                            gas: gasEstimate,
-                            gasPrice: gasPrice,
-                            value: null,
-                            functionInput: parameters);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e);
-                        _viewTabViewModel.MainViewModel.AppendToLog($"[{processedAmount + 1}/{total}] - 0x...{account.Address[^8..]} error with sendTransaction");
-                        processedAmount++;
-                        continue;
-                    }
-
-                    formattedMaxFeePaid = Web3.Convert.FromWei(gasPrice.Value * gasEstimate.Value);
-                }
-                else
-                {
-                    // EIP-1559 is supported
-                    var (maxFeePerGas, maxPriorityFeePerGas) = CalculateEip1559GasInfo(gasPrice, selectedChain.Id);
-
-                    try
-                    {
-                        txHash = await transfer.SendTransactionAsync(
-                            from: account.Address,
-                            gas: gasEstimate,
-                            value: null,
-                            maxFeePerGas: maxFeePerGas,
-                            maxPriorityFeePerGas: maxPriorityFeePerGas,
-                            functionInput: parameters
-                        );
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e);
-                        _viewTabViewModel.MainViewModel.AppendToLog($"[{processedAmount + 1}/{total}] - 0x...{account.Address[^8..]} error with sendTransaction");
-                        processedAmount++;
-                        continue;
-                    }
-
-                    formattedMaxFeePaid = Web3.Convert.FromWei(gasEstimate.Value * maxFeePerGas.Value);
-                }
-
-                Debug.WriteLine(txHash);
-                _viewTabViewModel.MainViewModel.AppendToLog(
-                    $"[{processedAmount + 1}/{total}] - 0x...{account.Address[^8..]} amount {Web3.Convert.FromWei(transferValue, selectedChain.Id):N5} fee {formattedMaxFeePaid:N5} hash {txHash}");
+                formattedMaxFeePaid = Web3.Convert.FromWei(gasPrice.Value * gasEstimate.Value);
             }
+            else
+            {
+                // EIP-1559 is supported
+                var (maxFeePerGas, maxPriorityFeePerGas) = CalculateEip1559GasInfo(gasPrice, selectedChain.Id);
+
+                try
+                {
+                    txHash = await transfer.SendTransactionAsync(
+                        from: account.Address,
+                        gas: gasEstimate,
+                        value: null,
+                        maxFeePerGas: maxFeePerGas,
+                        maxPriorityFeePerGas: maxPriorityFeePerGas,
+                        functionInput: parameters
+                    );
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                    _mainViewModel.AppendToLog(
+                        $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} error with sendTransaction");
+                    await Task.Delay(2000);
+                    return await MakeTransaction(account, selectedCoin, minRemain, maxRemain, selectedChain, endpoint,
+                        attempt + 1);
+                }
+
+                formattedMaxFeePaid = Web3.Convert.FromWei(gasEstimate.Value * maxFeePerGas.Value);
+            }
+
+            Debug.WriteLine(txHash);
+            _mainViewModel.AppendToLog(
+                $"[{_processedAmount + 1}/{_total}] - 0x...{account.Address[^8..]} amount {Web3.Convert.FromWei(transferValue, selectedChain.Id):N5} fee {formattedMaxFeePaid:N5} hash {txHash}");
+            return true;
         }
     }
 
-    private (HexBigInteger, HexBigInteger) CalculateEip1559GasInfo(HexBigInteger baseFee, Chain chain)
+    private void ShuffleAccounts(AccountInfo[] selectedAccounts)
+    {
+        var rng = new Random();
+        var keys = selectedAccounts.Select(_ => rng.NextDouble()).ToArray();
+        Array.Sort(keys, selectedAccounts);
+    }
+
+    private static (HexBigInteger, HexBigInteger) CalculateEip1559GasInfo(HexBigInteger baseFee, Chain chain)
     {
         var maxFeePerGasBase = baseFee.Value.ToDouble();
         HexBigInteger maxPriorityFeePerGas;
@@ -220,20 +258,13 @@ public class WithdrawFromManyAddressCommand : AsyncCommandBase
         else
         {
             maxFeePerGasBase *= 2;
-            maxPriorityFeePerGas = (maxFeePerGasBase * 0.1).ToInt().ToHexBigInteger();
+            maxPriorityFeePerGas = ((int)(maxFeePerGasBase * 0.1)).ToHexBigInteger();
         }
 
         return (maxFeePerGasBase.ToInt().ToHexBigInteger(), maxPriorityFeePerGas);
     }
 
-    private async Task<double> GetNativeBalance(string address, IWeb3 provider)
-    {
-        var balanceWei = await provider.Eth.GetBalance.SendRequestAsync(address);
-        var balance = (double)Web3.Convert.FromWei(balanceWei);
-        return balance;
-    }
-
-    private double GetDoubleWithinRange(double lowerBound, double upperBound)
+    private static double GetDoubleWithinRange(double lowerBound, double upperBound)
     {
         var random = new Random();
         return random.NextDouble() * (upperBound - lowerBound) + lowerBound;
