@@ -28,6 +28,7 @@
                   Width="150"
                   HorizontalAlignment="Left">
         </ComboBox>
+        <TextBlock Text="Remain balance" />
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
