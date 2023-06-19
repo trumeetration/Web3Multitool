@@ -119,7 +119,7 @@
                     Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                     IsEnabled="{Binding AnyAccountExists}"
                     Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="Copy addresses">
+                    ToolTip="Edit CEX addresses">
                     <materialDesign:PackIcon
                         Height="16"
                         Width="16"
