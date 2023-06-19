@@ -107,6 +107,7 @@ public class ViewTabViewModel : BaseViewModel
     {
         var accountToUpdate = _accountInfos.FirstOrDefault(x => x.Id == accountInfo.Id);
         var indexOfAccount = _accountInfos.IndexOf(accountToUpdate);
+        accountInfo.PropertyChanged += AccountInfoOnPropertyChanged;
         _accountInfos[indexOfAccount] = accountInfo;
     }
 
@@ -141,8 +142,6 @@ public class ViewTabViewModel : BaseViewModel
 
     private void AccountInfosStoreOnAccountInfosGenerated(IEnumerable<AccountInfo> accountInfos)
     {
-        _accountInfos.Clear();
-        
         foreach (var accountInfo in accountInfos)
         {
             _accountInfos.Add(accountInfo);
